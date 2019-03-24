@@ -1,0 +1,27 @@
+apiVersion: extensions/v1beta1
+
+kind: Deployment
+
+metadata:
+  name: frontend
+  labels:
+    app: vue
+
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: vue
+        tier: frontend
+    spec:
+      containers:
+      - name: vue-play
+        image: gcr.io/[GCLOUD_PROJECT]/vue-play
+        imagePullPolicy: Always
+        ports:
+        - name: http-server
+          containerPort: 8000
+        env:
+          - name: PROJECT_ID
+            value: [GCLOUD_PROJECT]

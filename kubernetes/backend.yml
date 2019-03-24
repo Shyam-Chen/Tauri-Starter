@@ -1,0 +1,27 @@
+apiVersion: extensions/v1beta1
+
+kind: Deployment
+
+metadata:
+  name: backend
+  labels:
+    app: fastify
+
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: fastify
+        tier: backend
+    spec:
+      containers:
+      - name: fastify-play
+        image: gcr.io/[GCLOUD_PROJECT]/fastify-play
+        imagePullPolicy: Always
+        ports:
+        - name: http-server
+          containerPort: 3000
+        env:
+          - name: PROJECT_ID
+            value: [GCLOUD_PROJECT]
