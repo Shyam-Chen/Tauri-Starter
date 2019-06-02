@@ -5,19 +5,19 @@ kind: Deployment
 metadata:
   name: backend
   labels:
-    app: fastify
+    app: express
 
 spec:
   replicas: 3
   template:
     metadata:
       labels:
-        app: fastify
+        app: express
         tier: backend
     spec:
       containers:
-      - name: fastify-play
-        image: gcr.io/[GCLOUD_PROJECT]/fastify-play
+      - name: express-play
+        image: gcr.io/[GCLOUD_PROJECT]/express-play
         imagePullPolicy: Always
         ports:
         - name: http-server
