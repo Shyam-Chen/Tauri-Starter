@@ -14,5 +14,5 @@ $ cd <PROJECT_NAME>
 2. Apply the config to resources
 
 ```bash
-$ kubectl apply -f kubernetes
+$ kubectl apply -f k8s
 ```
