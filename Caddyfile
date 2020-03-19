@@ -1,0 +1,14 @@
+0.0.0.0:3000 {
+  @post {
+    method POST
+  }
+  reverse_proxy @post 0.0.0.0:8000 {
+    lb_policy first
+  }
+  file_server /public
+  import snippet
+}
+
+{$PRERENDER} {
+
+}

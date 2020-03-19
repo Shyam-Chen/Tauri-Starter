@@ -1,18 +1,29 @@
 # Kubernetes Play
 
-## Getting Started
+## UIs
 
-Follow steps to execute this boilerplate.
+- [Caddy](https://github.com/caddyserver/caddy)
+- [Prerender](https://github.com/prerender/prerender)
+- Static files
+  - Vue
+  - React
+  - Angular
+  - Svelte
 
-1. Clone this boilerplate
+## APIs
 
-```bash
-$ git clone --depth 1 https://github.com/Shyam-Chen/Kubernetes-Play.git <PROJECT_NAME>
-$ cd <PROJECT_NAME>
-```
+- Kong
+- Server
+  - Express
+  - Koa
+  - Nest
+  - Fastify
 
-2. Apply the config to resources
+## DBs
 
-```bash
-$ kubectl apply -f k8s
-```
+- Mongo
+- Postgres
+- Redis
+- Cassandra
+- Prisma
+- ElasticSearch
