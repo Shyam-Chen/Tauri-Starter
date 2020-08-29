@@ -1,29 +1,12 @@
-# Kubernetes Play
+# Kubernetes Starter
 
-## UIs
+- docker `docker -v`
+- docker-compose `docker-compose -v`
+- minikube `minikube version`
+- kubectl `kubectl version --client --short`
+- helm `helm version --short`
+- httpie `http --version`
+- watch `watch -v`
+- openshift `oc version`
 
-- [Caddy](https://github.com/caddyserver/caddy)
-- [Prerender](https://github.com/prerender/prerender)
-- Static files
-  - Vue
-  - React
-  - Angular
-  - Svelte
-
-## APIs
-
-- Kong
-- Server
-  - Express
-  - Koa
-  - Nest
-  - Fastify
-
-## DBs
-
-- Mongo
-- Postgres
-- Redis
-- Cassandra
-- Prisma
-- ElasticSearch
+### List
