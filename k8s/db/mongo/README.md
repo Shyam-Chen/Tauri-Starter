@@ -1,7 +1,0 @@
-# MongoDB
-
-## Usage
-
-```bash
-
-```

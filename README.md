@@ -1,12 +1,10 @@
-# Kubernetes Starter
+# Pulumi Starter
 
+- pulumi `pulumi version`
 - docker `docker -v`
-- docker-compose `docker-compose -v`
-- minikube `minikube version`
 - kubectl `kubectl version --client --short`
-- helm `helm version --short`
+- minikube `minikube version`
 - httpie `http --version`
 - watch `watch -v`
-- openshift `oc version`
 
 ### List

@@ -1,7 +1,0 @@
-# PostgreSQL
-
-## Usage
-
-```bash
-
-```

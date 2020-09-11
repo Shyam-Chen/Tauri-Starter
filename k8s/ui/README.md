@@ -1,7 +1,0 @@
-# Front-end
-
-## Usage
-
-```bash
-
-```

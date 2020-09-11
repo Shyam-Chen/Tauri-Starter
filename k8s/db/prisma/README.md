@@ -1,7 +1,0 @@
-# Prisma
-
-## Usage
-
-```bash
-
-```
