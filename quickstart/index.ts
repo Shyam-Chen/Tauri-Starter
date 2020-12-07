@@ -33,3 +33,22 @@ const frontend = new k8s.core.v1.Service(appName, {
 export const ip = isMinikube
   ? frontend.spec.clusterIP
   : frontend.status.loadBalancer.apply((lb) => lb.ingress[0].ip || lb.ingress[0].hostname);
+
+/**
+ * $ minikube start
+ * $ kubectl version --short
+ *
+ * $ pulumi config set isMinikube true
+ * $ pulumi up
+ *
+ * $ kubectl get service
+ * $ kubectl port-forward service/nginx-xb43mkd8 8080:80
+ *
+ * $ pulumi destroy
+ * $ pulumi stack rm dev
+ * $ minikube stop
+ *
+ * ---
+ *
+ * $ http 127.0.0.1:8080
+ */
