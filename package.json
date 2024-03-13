@@ -2,7 +2,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "pnpm -C app dev",
+    "dev:web": "pnpm -C app dev",
+    "dev:mobile": "pnpm -C app tauri ios dev",
+    "dev:desktop": "pnpm -C app tauri dev",
     "mock": "pnpm -C mock mock",
     "build": "pnpm -C app build",
     "preview": "pnpm -C app preview",

@@ -2,11 +2,20 @@
 
 :link: A boilerplate for Native App with Tauri, Vue, and Tailwind on Vite.
 
+:rainbow: View Demo: [Live](https://vue-starter-6fa6.onrender.com) | Windows | macOS | Android | iOS
+
+:octocat: Source Code: [Web-side](https://github.com/Shyam-Chen/Vue-Starter) | [Native-side](https://github.com/Shyam-Chen/Tauri-Starter) | [Server-side](https://github.com/Shyam-Chen/Fastify-Starter)
+
 ## Prerequisites
 
 - Node.js version 20
 - PNPM version 8
 - [Tauri version 2](https://beta.tauri.app/guides/prerequisites/)
+
+```sh
+$ pnpm install
+$ pnpm mock
+```
 
 ### Web
 

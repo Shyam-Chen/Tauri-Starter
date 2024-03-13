@@ -1,35 +1,42 @@
-<script setup lang="ts">
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import Greet from './components/Greet.vue';
+<script lang="ts" setup>
+import { watch } from 'vue';
+import { RouterView } from 'vue-router';
+import { useLocaler } from 'vue-localer';
+import { XNotification } from '@x/ui';
+import { useNotification } from '@x/ui';
+import { useNavigatorLanguage, useDark } from '@vueuse/core';
+
+const { lang, langs } = useLocaler();
+const notification = useNotification();
+const { language } = useNavigatorLanguage();
+useDark();
+
+watch(
+  language,
+  (val) => {
+    if (val) {
+      const _language = localStorage.getItem('language');
+
+      if (_language) {
+        lang.value = _language;
+        document.documentElement.lang = _language;
+        return;
+      }
+
+      const found = langs.value.find((item) => item.startsWith(val) || val.startsWith(item));
+
+      if (found) {
+        lang.value = found;
+        document.documentElement.lang = found;
+        return;
+      }
+    }
+  },
+  { immediate: true },
+);
 </script>
 
 <template>
-  <div class="container">
-    <h1>Tauri Starter</h1>
-
-    <div class="row">
-      <a href="https://vitejs.dev" target="_blank">
-        <img src="/vite.svg" class="logo vite" alt="Vite logo" />
-      </a>
-      <a href="https://tauri.app" target="_blank">
-        <img src="/tauri.svg" class="logo tauri" alt="Tauri logo" />
-      </a>
-      <a href="https://vuejs.org/" target="_blank">
-        <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-      </a>
-    </div>
-
-    <Greet />
-  </div>
+  <RouterView />
+  <XNotification :messages="notification.state.messages" :timeouts="notification.state.timeouts" />
 </template>
-
-<style scoped>
-.logo.vite:hover {
-  filter: drop-shadow(0 0 2em #747bff);
-}
-
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #249b73);
-}
-</style>
