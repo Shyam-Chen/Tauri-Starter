@@ -1,0 +1,21 @@
+{
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm -C app dev",
+    "mock": "pnpm -C mock mock",
+    "build": "pnpm -C app build",
+    "preview": "pnpm -C app preview",
+    "check": "pnpm -C app check",
+    "test": "pnpm -C app test",
+    "e2e": "pnpm -C e2e e2e"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.6.0",
+    "@vue/eslint-config-prettier": "^9.0.0",
+    "@vue/eslint-config-typescript": "^13.0.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-vue": "^9.23.0",
+    "prettier": "^3.2.5"
+  }
+}
