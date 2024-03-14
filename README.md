@@ -2,7 +2,7 @@
 
 :link: A boilerplate for Native App with Tauri, Vue, and Tailwind on Vite.
 
-:rainbow: View Demo: [Live](https://vue-starter-6fa6.onrender.com) | Windows | macOS | Android | iOS
+:rainbow: View Demo: [Live](https://vue-starter-6fa6.onrender.com) | Windows | [macOS](./Tauri%20Starter_0.0.0_aarch64.dmg) | [Android](./app-universal-release-unsigned.apk) | iOS
 
 :octocat: Source Code: [Web-side](https://github.com/Shyam-Chen/Vue-Starter) | [Native-side](https://github.com/Shyam-Chen/Tauri-Starter) | [Server-side](https://github.com/Shyam-Chen/Fastify-Starter)
 
@@ -23,10 +23,18 @@ $ pnpm mock
 $ pnpm dev
 ```
 
+```sh
+$ pnpm build
+```
+
 ### Windows/macOS
 
 ```sh
 $ pnpm tauri dev
+```
+
+```sh
+$ pnpm tauri build
 ```
 
 ### Android
@@ -48,6 +56,7 @@ $ pnpm tauri android dev
 ```sh
 $ pnpm clean:android
 $ pnpm tauri android init
+$ pnpm tauri android build
 ```
 
 ### iOS
@@ -66,4 +75,5 @@ $ pnpm tauri ios dev
 ```sh
 $ pnpm clean:ios
 $ pnpm tauri ios init
+$ pnpm tauri ios build
 ```
