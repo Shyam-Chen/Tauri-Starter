@@ -5,7 +5,7 @@
   },
   "formatter": {
     "indentStyle": "space",
-    "lineWidth": 100
+    "lineWidth": 320
   },
   "javascript": {
     "formatter": {

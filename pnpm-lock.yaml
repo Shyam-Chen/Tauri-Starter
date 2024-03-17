@@ -9,7 +9,7 @@ importers:
   .:
     devDependencies:
       '@biomejs/biome':
-        specifier: ^1.6.0
+        specifier: ^1.6.1
         version: 1.6.1
       '@vue/eslint-config-prettier':
         specifier: ^9.0.0

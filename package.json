@@ -2,7 +2,6 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev:web": "pnpm -C app dev",
     "dev:mobile": "pnpm -C app tauri ios dev",
     "dev:desktop": "pnpm -C app tauri dev",
     "mock": "pnpm -C mock mock",
@@ -13,7 +12,7 @@
     "e2e": "pnpm -C e2e e2e"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.6.0",
+    "@biomejs/biome": "^1.6.1",
     "@vue/eslint-config-prettier": "^9.0.0",
     "@vue/eslint-config-typescript": "^13.0.0",
     "eslint": "^8.57.0",
