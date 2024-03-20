@@ -10,6 +10,7 @@
 
 - [Getting Started](#getting-started)
 - [Project Setup](#project-setup)
+- [Key Features](#key-features)
 
 ## Getting Started
 
@@ -105,3 +106,40 @@ $ pnpm clean:ios
 $ pnpm tauri ios init
 $ pnpm tauri ios build
 ```
+
+## Key Features
+
+This seed repository provides the following features:
+
+- ---------- **Essentials** ----------
+- [x] [Tauri](https://github.com/tauri-apps/tauri) - Native Apps Framework
+- [x] [Vue](https://github.com/vuejs/vue) - User Interface Framework
+- [x] [Router](https://github.com/vuejs/vue-router) - Routing
+- [x] [Routes](https://github.com/Vanilla-IceCream/vite-plugin-vue-routes) - File-based Routing
+- [x] [Storer](https://github.com/Vanilla-IceCream/vue-storer) - State Management
+- [x] [Formor](https://github.com/Vanilla-IceCream/vue-formor) - Form Validation
+- [x] [Valibot](https://github.com/fabian-hiller/valibot) - Schema Validation
+- [x] [Localer](https://github.com/Vanilla-IceCream/vue-localer) - Internationalization and Localization
+- [x] [Use](https://github.com/vueuse/vueuse) - Composition Utilities
+- [x] [Qrcode Image](https://github.com/Vanilla-IceCream/vue-qrcode-image) - QR Code Generation
+- [x] [Lodash](https://github.com/lodash/lodash) - JavaScript Utilities
+- [x] [Date Fns](https://github.com/date-fns/date-fns) - Date Utilities
+- [x] [UnoCSS](https://github.com/unocss/unocss) - CSS Utilities
+- [x] [Iconify](https://github.com/iconify/iconify) - Icon Utilities
+- [x] [Tiptap](https://github.com/ueberdosis/tiptap) - Rich Text Editor
+- [x] [ECharts](https://github.com/apache/echarts) - Data Visualization
+- ---------- **Tools** ----------
+- [x] [Vite](https://github.com/vitejs/vite) - Bundler
+- [x] [TypeScript](https://github.com/microsoft/TypeScript) - JavaScript with Syntax for Types
+- [x] [Sassy CSS](https://github.com/sass/sass) - CSS Extension
+- [x] [Biome](https://github.com/biomejs/biome) - Formatter and Linter
+- [x] [ESLint](https://github.com/eslint/eslint) - Linter
+- [x] [Prettier](https://github.com/prettier/prettier) - Formatter
+- [x] [Vitest](https://github.com/vitest-dev/vitest) - Test Runner
+- [ ] [WebdriverIO](https://github.com/webdriverio/webdriverio) - Test Automation
+- [ ] [Appium](https://github.com/appium/appium) - WebDriver Protocol Mobile Test Automation
+- ---------- **Environments** ----------
+- [x] [Node.js](https://nodejs.org/en/) - JavaScript Runtime Environment
+- [x] [Pnpm](https://pnpm.io/) - Package Manager
+- [x] [GitHub Actions](https://github.com/features/actions) - Continuous Integration and Delivery
+- [ ] [Tauri GitHub Action](https://github.com/tauri-apps/tauri-action) - Native Binary
