@@ -39,8 +39,8 @@ function onChange(val: unknown) {
 </script>
 
 <template>
-  <FormControl v-slot="{ uid }" :label="label" :required="required" :invalid="invalid" :help="help">
-    <div class="flex items-center gap-4">
+  <FormControl v-slot="{ uid }" :label :required :invalid :help>
+    <div class="flex flex-wrap items-center gap-4">
       <Checkbox
         v-for="(item, index) in options"
         v-bind="$attrs"

@@ -1,7 +1,8 @@
 <script lang="ts" setup generic="T extends object">
 import type { VNode } from 'vue';
-import { computed, reactive, watch, toRef } from 'vue';
+import { ref, computed, reactive, watch, watchEffect, toRef } from 'vue';
 import { useLocaler, useLocale } from 'vue-localer';
+import { useScroll } from '@vueuse/core';
 
 import type staticTable from '../../utilities/static-table/staticTable';
 import Spinner from '../spinner/Spinner.vue';
@@ -247,11 +248,25 @@ watch(
   },
   { deep: true },
 );
+
+const hasScrollbar = ref(false);
+const tableWrapper = ref<HTMLDivElement>();
+const { arrivedState, measure } = useScroll(tableWrapper);
+
+watchEffect(
+  () => {
+    if (tableWrapper.value && !props.loading) {
+      hasScrollbar.value = tableWrapper.value.scrollWidth > tableWrapper.value.clientWidth;
+      measure();
+    }
+  },
+  { flush: 'post' },
+);
 </script>
 
 <template>
   <div class="relative">
-    <div class="Table-Wrapper" :class="{ 'max-h-100': stickyHeader }">
+    <div ref="tableWrapper" class="Table-Wrapper" :class="{ 'max-h-100': stickyHeader }">
       <table class="Table-Element">
         <thead>
           <slot name="thead"></slot>
@@ -278,6 +293,10 @@ watch(
                 class="gap-1"
                 :class="{
                   'cursor-pointer': typeof col.sortable === 'boolean' ? col.sortable : true,
+                  'border-r-2 border-transparent':
+                    hasScrollbar && !arrivedState.left && col.sticky === 'left',
+                  'border-l-2 border-transparent':
+                    hasScrollbar && !arrivedState.right && col.sticky === 'right',
                 }"
                 @click="flux.onSort(col)"
               >
@@ -316,7 +335,7 @@ watch(
             <template v-for="row in flux.rows" :key="row._id || row.id">
               <Row
                 class="sticky-tr"
-                :class="{ 'bg-primary-300/25 !hover:bg-primary-400/25': selectable && row.checked }"
+                :class="{ selected: selectable && row.checked }"
                 @click="flux.clickRow(row)"
               >
                 <Cell v-if="selectable">
@@ -329,6 +348,7 @@ watch(
                   :class="[
                     {
                       'sticky-col sticky z-5 bg-white dark:bg-slate-800 !p-0': col.sticky,
+                      selected: col.sticky && selectable && row.checked,
                       'left-0': col.sticky === 'left',
                       'right-0': col.sticky === 'right',
                     },
@@ -352,8 +372,8 @@ watch(
                     v-else
                     :class="{
                       'border-slate-400/50 w-full px-4': col.sticky,
-                      'border-r-2': col.sticky === 'left',
-                      'border-l-2': col.sticky === 'right',
+                      'border-r-2': hasScrollbar && !arrivedState.left && col.sticky === 'left',
+                      'border-l-2': hasScrollbar && !arrivedState.right && col.sticky === 'right',
                     }"
                   >
                     <slot :name="col.key" :row="row">
@@ -431,6 +451,10 @@ watch(
 
 .Table-Element {
   @apply w-full border-collapse;
+}
+
+.selected {
+  @apply !bg-primary-50 !hover:bg-primary-100 !dark:bg-primary-950 !dark:hover:bg-primary-900;
 }
 
 .Table-RowsPerPage {

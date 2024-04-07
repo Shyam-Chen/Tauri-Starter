@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import type { HighlighterCore } from 'shiki/core';
-import { ref, onBeforeMount } from 'vue';
+import { onBeforeMount } from 'vue';
 import { useDark } from '@vueuse/core';
 import { getHighlighterCore } from 'shiki/core';
 
 import Card from '../card/Card.vue';
+import useHighlighter from './useHighlighter';
 
 const props = withDefaults(
   defineProps<{
@@ -19,10 +19,12 @@ const props = withDefaults(
 
 const isDark = useDark();
 
-const highlighter = ref<HighlighterCore>();
+const highlighter = useHighlighter();
 
 onBeforeMount(async () => {
-  highlighter.value = await getHighlighterCore({
+  if (highlighter.state.core) return;
+
+  highlighter.state.core = await getHighlighterCore({
     themes: [import('shiki/themes/github-dark.mjs'), import('shiki/themes/github-light.mjs')],
     langs: [
       import('shiki/langs/html.mjs'),
@@ -40,7 +42,7 @@ onBeforeMount(async () => {
     <div
       class="w-fit px-4 lg:px-6"
       v-html="
-        highlighter?.codeToHtml(props.code, {
+        highlighter.state.core?.codeToHtml(props.code, {
           lang: props.language,
           theme: isDark ? 'github-dark' : 'github-light',
         })

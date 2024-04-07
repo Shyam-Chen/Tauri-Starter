@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { nextTick, ref, computed, reactive } from 'vue';
+import { useLocale } from 'vue-localer';
 import { onClickOutside } from '@vueuse/core';
 import { format as _format, add, sub, getYear, setYear, getMonth, setMonth } from 'date-fns';
 
@@ -8,32 +9,37 @@ import useScrollParent from '../../composables/scroll-parent/useScrollParent';
 import TextField from '../text-field/TextField.vue';
 import Fade from '../fade/Fade.vue';
 
+const valueModel = defineModel<string>('value', { default: '' });
+
 const props = withDefaults(
   defineProps<{
-    value?: string;
+    minMonth?: string | Date;
+    maxMonth?: string | Date;
     format?: string;
-    months?: string[];
   }>(),
   {
-    value: '',
+    minMonth: undefined,
+    maxMonth: undefined,
     format: 'yyyy/MM',
-    // prettier-ignore
-    months: () => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
   },
 );
 
-const emit = defineEmits<{
-  (evt: 'update:value', val?: string): void;
-}>();
+const locale = useLocale();
 
 const target = ref();
 const input = ref();
 const picker = ref();
 
-const valueModel = computed({
-  get: () => props.value,
-  set: (val) => emit('update:value', val),
-});
+// prettier-ignore
+const months = computed(
+  () =>
+    locale.value?.months || [
+      'Jan', 'Feb', 'Mar',
+      'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep',
+      'Oct', 'Nov', 'Dec',
+    ],
+);
 
 const flux = reactive({
   showDatePicker: false,
@@ -106,10 +112,13 @@ const flux = reactive({
   },
   selectMonth(month: number) {
     flux.currentMoment = setMonth(flux.currentMoment, month);
-    flux.showDatePicker = false;
-
     const value = _format(flux.currentMoment, props.format);
-    emit('update:value', value);
+
+    if (props.minMonth && _format(new Date(props.minMonth), props.format) > value) return;
+    if (props.maxMonth && _format(new Date(props.maxMonth), props.format) < value) return;
+
+    flux.showDatePicker = false;
+    valueModel.value = value;
   },
 });
 
@@ -123,6 +132,22 @@ useScrollParent(
     if (flux.showDatePicker) flux.resizePanel();
   },
 );
+
+function monthDisabled(index: number) {
+  const currentMonth = _format(new Date(getYear(flux.currentMoment), index), props.format);
+  const minMonth = props.minMonth && _format(new Date(props.minMonth), props.format);
+  const maxMonth = props.maxMonth && _format(new Date(props.maxMonth), props.format);
+
+  if (minMonth && maxMonth) {
+    return minMonth > currentMonth || maxMonth < currentMonth;
+  } else if (minMonth) {
+    return minMonth > currentMonth;
+  } else if (maxMonth) {
+    return maxMonth < currentMonth;
+  }
+
+  return false;
+}
 </script>
 
 <template>
@@ -178,7 +203,7 @@ useScrollParent(
             :value="year"
             class="flex justify-center items-center hover:bg-slate-200 dark:hover:bg-slate-600 rounded text-sm cursor-pointer"
             :class="{
-              'text-white bg-blue-400 important:hover:bg-blue-500': year === getYear(flux.now),
+              'ring-1 ring-primary-500': year === getYear(flux.now),
             }"
             @click="flux.selectYear(year)"
           >
@@ -193,8 +218,9 @@ useScrollParent(
             :value="index"
             class="flex justify-center items-center hover:bg-slate-200 dark:hover:bg-slate-600 rounded text-sm cursor-pointer"
             :class="{
-              'text-white bg-blue-400 important:hover:bg-blue-500':
+              'ring-1 ring-primary-500':
                 index === getMonth(flux.now) && getYear(flux.currentMoment) === getYear(flux.now),
+              'text-slate-300 dark:text-slate-600 !cursor-not-allowed': monthDisabled(index),
               'text-white bg-primary-600 important:hover:bg-primary-700':
                 valueModel &&
                 index === getMonth(new Date(valueModel)) &&

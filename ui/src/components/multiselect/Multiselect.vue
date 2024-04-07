@@ -261,7 +261,7 @@ useScrollParent(
 </script>
 
 <template>
-  <FormControl :label="label" :required="required" :invalid="invalid" :help="help">
+  <FormControl :label :required :invalid :help>
     <template #label>
       <slot></slot>
       <span class="flex-1"></span>
@@ -406,18 +406,6 @@ useScrollParent(
 </template>
 
 <style lang="scss" scoped>
-.Multiselect-Wrapper {
-  @apply flex flex-col w-full;
-
-  &.disabled {
-    @apply opacity-60;
-  }
-}
-
-.Multiselect-Label {
-  @apply text-sm font-bold mb-2 empty:hidden flex items-center;
-}
-
 .Multiselect-LabelHelper {
   @apply flex text-xs font-normal text-info-500 cursor-pointer;
 }
@@ -441,7 +429,7 @@ useScrollParent(
   }
 
   &.disabled {
-    @apply cursor-not-allowed focus:ring-0 focus:border-slate-400;
+    @apply cursor-not-allowed opacity-60 focus:ring-0 focus:border-slate-400;
   }
 }
 
