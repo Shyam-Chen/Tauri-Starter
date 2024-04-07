@@ -11,10 +11,9 @@ import envify from 'process-envify';
 // @ts-expect-error process is a nodejs global
 const mobile = !!/android|ios/.exec(process.env.TAURI_ENV_PLATFORM);
 
-// https://vitejs.dev/config/
 export default defineConfig(async () => ({
   define: envify({
-    API_URL: mobile ? 'http://0.0.0.0:3000' : process.env.API_URL || '',
+    API_URL: mobile ? 'http://192.168.100.127:3000' : process.env.API_URL || '',
   }),
   plugins: [
     vue(),
@@ -51,7 +50,7 @@ export default defineConfig(async () => ({
   server: {
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:3000',
+        target: 'http://0.0.0.0:3000',
         ws: true,
       },
     },
