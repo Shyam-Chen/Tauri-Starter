@@ -1,4 +1,5 @@
-import path from 'node:path';
+import { resolve } from 'node:path';
+import { networkInterfaces } from 'node:os';
 import vue from '@vitejs/plugin-vue';
 import { internalIpV4 } from 'internal-ip';
 import { defineConfig } from 'vite';
@@ -8,12 +9,18 @@ import { presetIcons, presetUno, transformerDirectives } from 'unocss';
 import unocss from 'unocss/vite';
 import envify from 'process-envify';
 
-// @ts-expect-error process is a nodejs global
-const mobile = !!/android|ios/.exec(process.env.TAURI_ENV_PLATFORM);
+const mobile = !!/android|ios/.exec(process.env.TAURI_ENV_PLATFORM!);
+
+const ipv4Address = Object.values(networkInterfaces())
+  .flatMap((nInterface) => nInterface ?? [])
+  .filter(
+    (detail) =>
+      detail && detail.address && detail.family === 'IPv4' && detail.address !== '127.0.0.1',
+  )[0].address;
 
 export default defineConfig(async () => ({
   define: envify({
-    API_URL: mobile ? 'http://192.168.100.127:3000' : process.env.API_URL || '',
+    API_URL: mobile ? `http://${ipv4Address}:3000` : process.env.API_URL || '',
   }),
   plugins: [
     vue(),
@@ -35,18 +42,13 @@ export default defineConfig(async () => ({
   ],
   resolve: {
     alias: {
-      '~': path.resolve(__dirname, 'src'),
-      '@': path.resolve(__dirname, 'src'),
-      mock: path.resolve(__dirname, '../mock/src/routes'),
+      '~': resolve(__dirname, 'src'),
+      '@': resolve(__dirname, 'src'),
+      mock: resolve(__dirname, '../mock/src/routes'),
     },
     mainFields: ['module'],
   },
-
-  // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
-  //
-  // 1. prevent vite from obscuring rust errors
   clearScreen: false,
-  // 2. tauri expects a fixed port, fail if that port is not available
   server: {
     proxy: {
       '/api': {
@@ -57,15 +59,8 @@ export default defineConfig(async () => ({
     port: 1420,
     strictPort: true,
     host: mobile ? '0.0.0.0' : false,
-    hmr: mobile
-      ? {
-          protocol: 'ws',
-          host: await internalIpV4(),
-          port: 1421,
-        }
-      : undefined,
+    hmr: mobile ? { protocol: 'ws', host: await internalIpV4(), port: 1421 } : undefined,
     watch: {
-      // 3. tell vite to ignore watching `src-tauri`
       ignored: ['**/src-tauri/**'],
     },
   },
