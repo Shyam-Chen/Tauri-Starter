@@ -46,11 +46,28 @@ $ pnpm dlx degit Shyam-Chen/Starter-Templates/tauri my-tauri-app
 
 Follow steps to execute this boilerplate.
 
-### Web
+### iOS
 
-Please refer to the upstream [repository](https://github.com/Shyam-Chen/Vue-Starter).
+![iOS](./ios.png)
 
-### Windows/macOS
+```sh
+$ sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+$ xcrun -f devicectl
+```
+
+```sh
+$ pnpm tauri ios init
+$ pnpm tauri ios dev
+# select emulator
+```
+
+```sh
+$ pnpm clean:ios
+$ pnpm tauri ios init
+$ pnpm tauri ios build
+```
+
+### macOS
 
 ![macOS](./macos.png)
 
@@ -62,7 +79,8 @@ $ pnpm tauri dev
 $ pnpm tauri build
 ```
 
-### Android
+<details>
+  <summary><h3>Android</h3></summary>
 
 ![Android](./android.png)
 
@@ -86,26 +104,20 @@ $ pnpm tauri android init
 $ pnpm tauri android build
 ```
 
-### iOS
+</details>
 
-![iOS](./ios.png)
+<details>
+  <summary><h3>Windows</h3></summary>
 
 ```sh
-$ sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
-$ xcrun -f devicectl
+$ pnpm tauri dev
 ```
 
 ```sh
-$ pnpm tauri ios init
-$ pnpm tauri ios dev
-# select emulator
+$ pnpm tauri build
 ```
 
-```sh
-$ pnpm clean:ios
-$ pnpm tauri ios init
-$ pnpm tauri ios build
-```
+</details>
 
 ## Key Features
 
