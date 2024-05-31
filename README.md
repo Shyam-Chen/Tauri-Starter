@@ -4,7 +4,7 @@
 
 :rainbow: View Demo: [Live](https://vue-starter-6fa6.onrender.com) | Windows | macOS | Android | iOS
 
-:octocat: Source Code: [Web-side](https://github.com/Shyam-Chen/Vue-Starter) | [Native-side](https://github.com/Shyam-Chen/Tauri-Starter) | [Server-side](https://github.com/Shyam-Chen/Fastify-Starter)
+:octocat: Source Code: [Web-side](https://github.com/Shyam-Chen/Vue-Starter) | [Native-side](https://github.com/Shyam-Chen/Tauri-Starter) | [Server-side](https://github.com/Shyam-Chen/Fastify-Starter) | [Cloud-side](https://github.com/Shyam-Chen/Pulumi-Starter)
 
 ## Table of Contents
 
@@ -17,7 +17,7 @@
 Prerequisites:
 
 - Node.js version 20
-- PNPM version 8
+- PNPM version 9
 - [Tauri version 2](https://beta.tauri.app/guides/prerequisites/)
 
 Get started with Tauri Starter.
@@ -57,8 +57,15 @@ $ xcrun -f devicectl
 
 ```sh
 $ pnpm tauri ios init
+# Xcode -> Open Developer Tool -> Simulator -> File -> Open Simulator -> iPhone Pro
 $ pnpm tauri ios dev
-# select emulator
+# Detected iOS simulators:
+#   [1] iPhone
+#   [2] iPhone Plus
+#   [3] iPhone Pro
+#   [4] iPhone Pro Max
+#   Enter an index for a simulator above.
+# Simulator: 3
 ```
 
 ```sh
