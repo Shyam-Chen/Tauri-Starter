@@ -40,7 +40,7 @@
     "@vitest/coverage-v8": "^1.4.0",
     "@vue/test-utils": "^2.4.5",
     "happy-dom": "^14.7.0",
-    "internal-ip": "^8.0.0",
+    "private-ip-address": "^1.0.0",
     "process-envify": "^2.0.0",
     "rimraf": "^5.0.5",
     "sass": "^1.74.1",
