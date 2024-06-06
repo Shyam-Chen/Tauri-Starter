@@ -1,6 +1,6 @@
 # Tauri Starter
 
-:link: A boilerplate for Native App with Tauri, Vue, and Tailwind on Vite.
+:link: A boilerplate for native applications with Tauri and Xcode using TypeScript on Vite.
 
 :rainbow: View Demo: [Live](https://vue-starter-6fa6.onrender.com) | Windows | macOS | Android | iOS
 
@@ -11,14 +11,16 @@
 - [Getting Started](#getting-started)
 - [Project Setup](#project-setup)
 - [Key Features](#key-features)
+- Configuration
+- [Directory Structure](#directory-structure)
 
 ## Getting Started
 
 Prerequisites:
 
-- Node.js version 20
-- PNPM version 9
-- [Tauri version 2](https://beta.tauri.app/guides/prerequisites/)
+- Node.js v20
+- PNPM v9
+- Tauri v2
 
 Get started with Tauri Starter.
 
@@ -39,12 +41,18 @@ $ pnpm mock
 Or use barebones scaffolding for your new Tauri app
 
 ```sh
-$ pnpm dlx degit Shyam-Chen/Starter-Templates/tauri my-tauri-app
+$ pnpm dlx degit Shyam-Chen/Barebones-Templates/tauri my-tauri-app
 ```
 
 ## Project Setup
 
 Follow steps to execute this boilerplate.
+
+### Install dependencies
+
+```sh
+$ pnpm install
+```
 
 ### iOS
 
@@ -126,6 +134,12 @@ $ pnpm tauri build
 
 </details>
 
+### Mock APIs during development
+
+```sh
+$ pnpm mock
+```
+
 ## Key Features
 
 This seed repository provides the following features:
@@ -162,3 +176,62 @@ This seed repository provides the following features:
 - [x] [Pnpm](https://pnpm.io/) - Package Manager
 - [x] [GitHub Actions](https://github.com/features/actions) - Continuous Integration and Delivery
 - [ ] [Tauri GitHub Action](https://github.com/tauri-apps/tauri-action) - Native Binary
+
+## Directory Structure
+
+The structure follows the LIFT Guidelines.
+
+```coffee
+.
+├── .github/workflows
+│   ├── ci.yaml
+│   └── publish.yaml
+├── app
+│   ├── public
+│   ├── src
+│   │   ├── assets
+│   │   ├── components
+│   │   ├── composables
+│   │   ├── layouts
+│   │   ├── locales
+│   │   ├── middleware
+│   │   ├── plugins
+│   │   ├── routes
+│   │   ├── utilities
+│   │   ├── workers
+│   │   ├── App.vue
+│   │   ├── main.ts
+│   │   └── shims.d.ts
+│   ├── index.html
+│   ├── package.json
+│   ├── tsconfig.json
+│   └── vite.config.ts
+├── docs -> Write documentation with VitePress
+│   ├── .vitepress
+│   ├── index.md
+│   ├── package.json
+│   └── vite.config.ts
+├── e2e -> End-to-end testing
+│   ├── src
+│   ├── package.json
+│   ├── playwright.config.ts
+│   └── tsconfig.json
+├── mock -> Mock backend API
+│   ├── src
+│   ├── package.json
+│   ├── tsconfig.json
+│   └── vite.config.ts
+├── ui -> Design system
+│   ├── src
+│   ├── package.json
+│   ├── tsconfig.json
+│   └── vite.config.ts
+├── .editorconfig
+├── .eslintrc
+├── .gitignore
+├── .prettierrc
+├── package.json
+├── pnpm-lock.yaml
+├── pnpm-workspace.yaml
+└── README.md
+```

@@ -6,13 +6,13 @@
     "dev:desktop": "pnpm -C app tauri dev",
     "mock": "pnpm -C mock mock",
     "build": "pnpm -C app build",
+    "lint": "eslint ./app",
     "preview": "pnpm -C app preview",
     "check": "pnpm -C app check",
     "test": "pnpm -C app test",
     "e2e": "pnpm -C e2e e2e"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.7.3",
     "@vue/eslint-config-prettier": "9.0.0",
     "@vue/eslint-config-typescript": "13.0.0",
     "eslint": "8.57.0",
