@@ -1,45 +1,107 @@
 <script lang="ts" setup>
-import { ref, reactive } from 'vue';
+import type { ComponentExposed } from 'vue-component-type-helpers';
+import { nextTick, ref, toRaw } from 'vue';
+import { useLocale } from 'vue-localer';
 
 import Avatar from '../avatar/Avatar.vue';
 import Button from '../button/Button.vue';
 import Popover from '../popover/Popover.vue';
-import Listbox from '../listbox/Listbox.vue';
+import Listbox from '../listbox';
 import ChatBox from '../chat-box/ChatBox.vue';
+import Dialog from '../dialog/Dialog.vue';
+
+type Chat = {
+  name?: string;
+  time?: string;
+  self?: boolean;
+  chatBox?: BubbleChatBox;
+  uploading?: boolean;
+  sending?: boolean;
+} & Partial<BubbleChatBox>;
+
+type BubbleChatBox = {
+  message: string;
+  files: (File & { url?: string })[];
+};
+
+const defaultModel = defineModel<BubbleChatBox>({
+  default: { message: '', files: [] },
+});
 
 defineProps<{
-  chat?: any;
-  self?: boolean;
+  chat?: Chat;
+  viewonly?: boolean;
 }>();
 
+const emit = defineEmits<{
+  (evt: 'uploadFiles', files: File[]): void;
+  (evt: 'save', chat?: Chat): void;
+  (evt: 'delete', chat?: Chat): void;
+}>();
+
+const locale = useLocale();
+
 const morePopover = ref(false);
-
 const edit = ref(false);
-const message = ref('');
+const editBox = ref<ComponentExposed<typeof ChatBox>>();
+const originalDefaultModel = ref<BubbleChatBox>();
+const deleteDialog = ref(false);
 
-const flux = reactive({
-  files: [] as File[],
-  onChange(event: Event) {
-    const el = event.target as HTMLInputElement;
-    const files = Array.from(el.files || []);
-    flux.files = [...flux.files, ...files];
-  },
-  onDelete(index: number) {
-    const arr = [...flux.files];
-    arr.splice(index, 1);
-    flux.files = arr;
-  },
+async function onEdit() {
+  edit.value = true;
+  morePopover.value = false;
+
+  if (!originalDefaultModel.value) {
+    originalDefaultModel.value = structuredClone(toRaw(defaultModel.value));
+  }
+
+  await nextTick();
+  if (editBox.value?.editor) editBox.value.editor.commands.focus('end');
+}
+
+function onChange(event: Event) {
+  const el = event.target as HTMLInputElement;
+  const files = Array.from(el.files || []);
+  emit('uploadFiles', files);
+}
+
+function onCancel() {
+  edit.value = false;
+
+  if (originalDefaultModel.value) {
+    defaultModel.value = structuredClone(toRaw(originalDefaultModel.value));
+  }
+
+  originalDefaultModel.value = undefined;
+}
+
+function closeEdit() {
+  edit.value = false;
+}
+
+function closeDeleteDialog() {
+  deleteDialog.value = false;
+}
+
+defineExpose({
+  closeEdit,
+  closeDeleteDialog,
 });
 </script>
 
 <template>
   <div class="flex items-start gap-2.5 group">
-    <Avatar v-if="!self" class="bg-primary-500 text-white">BG</Avatar>
+    <Avatar v-if="!chat?.self" class="bg-primary-500 text-white">{{
+      chat?.name?.[0].toLocaleUpperCase()
+    }}</Avatar>
 
     <div
-      v-if="self"
-      class="self-center hidden group-hover:block"
-      :class="{ '!block': morePopover }"
+      v-if="chat?.self"
+      class="self-center hidden"
+      :class="{
+        'group-hover:block': !viewonly,
+        '!block': morePopover,
+      }"
     >
       <Popover v-model="morePopover">
         <Button
@@ -52,22 +114,16 @@ const flux = reactive({
 
         <template #content>
           <Listbox>
-            <Listbox.Item
-              @click="
-                edit = true;
-                morePopover = false;
-                message = chat?.message;
-              "
-            >
+            <Listbox.Item @click="onEdit">
               <div class="flex items-center gap-2">
-                <div class="i-material-symbols-edit-rounded w-5 h-5"></div>
-                <div>Edit</div>
+                <div class="i-material-symbols-edit-outline-rounded size-5"></div>
+                <div>{{ locale.edit || 'Edit' }}</div>
               </div>
             </Listbox.Item>
-            <Listbox.Item>
+            <Listbox.Item @click="deleteDialog = true">
               <div class="flex items-center gap-2">
-                <div class="i-material-symbols-delete-rounded w-5 h-5"></div>
-                <div>Delete</div>
+                <div class="i-material-symbols-delete-outline-rounded size-5"></div>
+                <div>{{ locale.delete || 'Delete' }}</div>
               </div>
             </Listbox.Item>
           </Listbox>
@@ -76,8 +132,11 @@ const flux = reactive({
     </div>
 
     <div class="flex flex-col gap-1 md:max-w-xs lg:max-w-sm xl:max-w-sm 2xl:max-w-md">
-      <div class="flex items-center space-x-2 rtl:space-x-reverse" :class="{ 'justify-end': self }">
-        <span v-if="!self" class="text-sm font-semibold text-gray-900 dark:text-white">{{
+      <div
+        class="flex items-center space-x-2 rtl:space-x-reverse"
+        :class="{ 'justify-end': chat?.self }"
+      >
+        <span v-if="!chat?.self" class="text-sm font-semibold text-gray-900 dark:text-white">{{
           chat?.name
         }}</span>
         <span class="text-sm font-normal text-gray-500 dark:text-gray-400">{{ chat?.time }}</span>
@@ -85,23 +144,19 @@ const flux = reactive({
 
       <div
         v-if="!edit"
-        class="flex flex-col leading-1.5 px-4 py-3 border-gray-200 bg-gray-100 rounded-e-xl rounded-es-xl dark:bg-gray-700"
-        :class="{ 'rounded-s-xl !rounded-se-0': self }"
+        class="flex flex-col p-4 border-gray-200 bg-gray-100 rounded-e-xl rounded-es-xl dark:bg-gray-700"
+        :class="{ 'rounded-s-xl !rounded-se-0': chat?.self }"
       >
-        <ChatBox :modelValue="chat?.message" viewonly />
+        <ChatBox v-model="defaultModel" :self="chat?.self" viewonly />
       </div>
 
-      <ChatBox v-if="edit" v-model="message" editing />
-
-      <div>
-        <div v-for="(file, index) in flux.files" :key="index" class="flex items-center gap-2">
-          {{ file.name }}
-          <div
-            class="i-material-symbols-delete-rounded size-5 cursor-pointer"
-            @click="flux.onDelete(index)"
-          ></div>
-        </div>
-      </div>
+      <ChatBox
+        v-if="edit"
+        ref="editBox"
+        v-model="defaultModel"
+        editing
+        @send="emit('save', chat)"
+      />
 
       <div v-if="edit" class="flex gap-2">
         <div class="flex-1">
@@ -110,6 +165,8 @@ const flux = reactive({
             variant="text"
             color="secondary"
             size="small"
+            :disabled="chat?.sending"
+            :loading="chat?.uploading"
             @click="($refs.fileInput as HTMLInputElement).click()"
           />
           <input
@@ -117,14 +174,60 @@ const flux = reactive({
             type="file"
             multiple
             class="hidden"
-            @change="flux.onChange"
+            @change="onChange"
             @click="($refs.fileInput as HTMLInputElement).value = ''"
           />
         </div>
 
-        <Button color="secondary" size="small" @click="edit = false">Cancel</Button>
-        <Button size="small">Save</Button>
+        <Button
+          prepend="i-material-symbols-close-rounded"
+          :label="locale.cancel || 'Cancel'"
+          color="secondary"
+          size="small"
+          @click="onCancel"
+        />
+        <Button
+          prepend="i-material-symbols-save-outline-rounded"
+          :label="locale.save || 'Save'"
+          size="small"
+          :disabled="chat?.uploading"
+          :loading="chat?.sending"
+          @click="emit('save', chat)"
+        />
       </div>
     </div>
+
+    <Dialog
+      v-model="deleteDialog"
+      :title="locale.deleteMessageTitle || 'Delete Message'"
+      class="!max-w-lg"
+    >
+      <div class="mb-4">
+        {{ locale.deleteMessageContent || 'Are you sure you want to delete this message?' }}
+      </div>
+
+      <div class="flex flex-col p-4 border-gray-200 bg-gray-100 rounded-xl dark:bg-gray-700">
+        <ChatBox :modelValue="originalDefaultModel || defaultModel" viewonly />
+      </div>
+
+      <div class="flex justify-end gap-2 mt-6">
+        <Button
+          prepend="i-material-symbols-close-rounded"
+          :label="locale.cancel || 'Cancel'"
+          color="secondary"
+          size="small"
+          @click="deleteDialog = false"
+        />
+        <Button
+          prepend="i-material-symbols-delete-outline-rounded"
+          :label="locale.delete || 'Delete'"
+          color="danger"
+          size="small"
+          :disabled="chat?.uploading"
+          :loading="chat?.sending"
+          @click="emit('delete', chat)"
+        />
+      </div>
+    </Dialog>
   </div>
 </template>

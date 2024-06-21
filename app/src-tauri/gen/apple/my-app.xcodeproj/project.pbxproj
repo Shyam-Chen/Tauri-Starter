@@ -18,6 +18,7 @@
 		D230CFF6A4DD2B29115BAB87 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0077881E32877C0E440D19B /* WebKit.framework */; };
 		DF4A76406E6418547E005441 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A20C2ADFAF19C2651E5D0420 /* QuartzCore.framework */; };
 		DF809D69648DC91F609DA8C9 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0B753C340792ADB0C13BB129 /* UIKit.framework */; };
+		F58E838D7F03459E7E9A96DC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 528C1747547F32E2DC7B6824 /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		0E797FB7A504FB3C4191B74B /* main.rs */ = {isa = PBXFileReference; path = main.rs; sourceTree = "<group>"; };
 		3E93FEA913E9AB0588E52095 /* libtauri_lib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libtauri_lib.a; sourceTree = "<group>"; };
 		480B87AF7AB363276809FF6D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		528C1747547F32E2DC7B6824 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6CF815B5C84D3297940B2E0D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		86B363D5E8E1112D389F0DD0 /* my-app_iOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "my-app_iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8ABDCA298343990CA7608AB4 /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
@@ -115,6 +117,7 @@
 			children = (
 				EF5209BA357A402CF7AC1909 /* assets */,
 				9A801CD593D08CD40B9103C4 /* Assets.xcassets */,
+				528C1747547F32E2DC7B6824 /* LaunchScreen.storyboard */,
 				77DAC57EDBDA65AC366B4E46 /* Externals */,
 				36884B773300274B39975499 /* my-app_iOS */,
 				CCA94010C95AC222B64E9FF9 /* Sources */,
@@ -205,6 +208,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				20F5CA3179D526F58B1FD89A /* Assets.xcassets in Resources */,
+				F58E838D7F03459E7E9A96DC /* LaunchScreen.storyboard in Resources */,
 				777A872D7DC515D036042BE7 /* assets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -226,8 +230,9 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(SRCROOT)/target/aarch64-apple-ios/${CONFIGURATION}/deps/libtauri_lib.a",
-				"$(SRCROOT)/target/x86_64-apple-ios/${CONFIGURATION}/deps/libtauri_lib.a",
+				"$(SRCROOT)/Externals/x86_64/${CONFIGURATION}/libtauri_lib.a",
+				"$(SRCROOT)/Externals/arm64/${CONFIGURATION}/libtauri_lib.a",
+				"$(SRCROOT)/Externals/arm64-sim/${CONFIGURATION}/libtauri_lib.a",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -274,7 +279,7 @@
 				"LIBRARY_SEARCH_PATHS[arch=arm64-sim]" = "$(inherited) $(PROJECT_DIR)/Externals/arm64-sim/$(CONFIGURATION) $(SDKROOT)/usr/lib/swift $(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME) $(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)";
 				"LIBRARY_SEARCH_PATHS[arch=arm64]" = "$(inherited) $(PROJECT_DIR)/Externals/arm64/$(CONFIGURATION) $(SDKROOT)/usr/lib/swift $(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME) $(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)";
 				"LIBRARY_SEARCH_PATHS[arch=x86_64]" = "$(inherited) $(PROJECT_DIR)/Externals/x86_64/$(CONFIGURATION) $(SDKROOT)/usr/lib/swift $(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME) $(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)";
-				PRODUCT_BUNDLE_IDENTIFIER = "tauri.starter.my-app";
+				PRODUCT_BUNDLE_IDENTIFIER = tauri.starter.dev;
 				PRODUCT_NAME = "Tauri Starter";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -365,7 +370,7 @@
 				"LIBRARY_SEARCH_PATHS[arch=arm64-sim]" = "$(inherited) $(PROJECT_DIR)/Externals/arm64-sim/$(CONFIGURATION) $(SDKROOT)/usr/lib/swift $(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME) $(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)";
 				"LIBRARY_SEARCH_PATHS[arch=arm64]" = "$(inherited) $(PROJECT_DIR)/Externals/arm64/$(CONFIGURATION) $(SDKROOT)/usr/lib/swift $(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME) $(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)";
 				"LIBRARY_SEARCH_PATHS[arch=x86_64]" = "$(inherited) $(PROJECT_DIR)/Externals/x86_64/$(CONFIGURATION) $(SDKROOT)/usr/lib/swift $(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME) $(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)";
-				PRODUCT_BUNDLE_IDENTIFIER = "tauri.starter.my-app";
+				PRODUCT_BUNDLE_IDENTIFIER = tauri.starter.dev;
 				PRODUCT_NAME = "Tauri Starter";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";

@@ -43,15 +43,19 @@ const props = withDefaults(
   },
 );
 
+const emit = defineEmits<{
+  (evt: 'change', { startDate, endDate }: { startDate: string; endDate: string }): void;
+}>();
+
 const localer = useLocaler();
 const locale = useLocale();
 
 const _weekdays = computed(() => locale.value?.weekdays || props.weekdays);
 const _months = computed(() => locale.value?.months || props.months);
 
-const target = ref();
-const input = ref();
-const picker = ref();
+const target = ref<HTMLDivElement>();
+const input = ref<typeof TextField>();
+const picker = ref<HTMLDivElement>();
 
 const createDays = (y?: number, m?: number) => {
   const currentPeriod = () => {
@@ -132,18 +136,20 @@ const flux = reactive({
   showDatePicker: false,
   direction: '' as 'down' | 'up' | '',
   resizePanel() {
-    const rect = input.value.$el.querySelector('.TextField-Input').getBoundingClientRect();
+    const rect = input.value?.$el.querySelector('.TextField-Input').getBoundingClientRect();
 
-    picker.value.style.left = `${rect.left}px`;
+    if (picker.value) {
+      picker.value.style.left = `${rect.left}px`;
 
-    const center = window.innerHeight / 2;
+      const center = window.innerHeight / 2;
 
-    if (rect.top > center) {
-      picker.value.style.top = `${rect.top}px`;
-      flux.direction = 'up';
-    } else {
-      picker.value.style.top = `${rect.bottom}px`;
-      flux.direction = 'down';
+      if (rect.top > center) {
+        picker.value.style.top = `${rect.top}px`;
+        flux.direction = 'up';
+      } else {
+        picker.value.style.top = `${rect.bottom}px`;
+        flux.direction = 'down';
+      }
     }
   },
   openPicker() {
@@ -237,6 +243,7 @@ const flux = reactive({
 
     startValueModel.value = startDate || '';
     endValueModel.value = endDate || '';
+    emit('change', { startDate, endDate });
   },
   selectYear(val: number) {
     flux.showYears = false;
@@ -417,7 +424,7 @@ useScrollParent(
             :value="year"
             class="flex justify-center items-center hover:bg-slate-200 dark:hover:bg-slate-600 rounded text-sm cursor-pointer"
             :class="{
-              'text-white bg-blue-400 !hover:bg-blue-500': year === getYear(flux.now),
+              'ring-1 ring-primary-500': year === getYear(flux.now),
             }"
             @click="flux.selectYear(year)"
           >
@@ -432,7 +439,7 @@ useScrollParent(
             :value="index"
             class="flex justify-center items-center hover:bg-slate-200 dark:hover:bg-slate-600 rounded text-sm cursor-pointer"
             :class="{
-              'text-white bg-blue-400 !hover:bg-blue-500':
+              'ring-1 ring-primary-500':
                 index === getMonth(flux.now) && flux.year === getYear(flux.now),
             }"
             @click="flux.selectMonth(index)"

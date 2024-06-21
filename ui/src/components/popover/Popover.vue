@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { nextTick, ref, computed, reactive, watch, provide } from 'vue';
-import { vOnClickOutside } from '@vueuse/components';
+import { onClickOutside } from '@vueuse/core';
 
 import useScrollParent from '../../composables/scroll-parent/useScrollParent';
 
@@ -17,8 +17,8 @@ const props = withDefaults(
   },
 );
 
-const target = ref();
-const panel = ref();
+const target = ref<HTMLDivElement>();
+const panel = ref<HTMLDivElement>();
 
 const flux = reactive({
   status: false,
@@ -44,10 +44,11 @@ const flux = reactive({
 
   direction: '' as 'down' | 'up' | '',
   resizePanel() {
+    if (!target.value || !panel.value) return;
+
     const rect = target.value.getBoundingClientRect();
 
     const center = window.innerHeight / 2;
-    const middle = window.innerWidth / 2;
 
     if (rect.top > center) {
       panel.value.style.top = `${rect.top}px`;
@@ -58,6 +59,7 @@ const flux = reactive({
     }
 
     const quarter = window.innerWidth / 4;
+    const middle = window.innerWidth / 2;
 
     if (quarter <= rect.right && rect.right <= quarter * 3) {
       const panelRect = panel.value.getBoundingClientRect();
@@ -89,6 +91,14 @@ watch(
   },
 );
 
+onClickOutside(
+  target,
+  () => {
+    flux.close();
+  },
+  { ignore: [panel] },
+);
+
 provide('Popover', {
   withinPopover: true,
 });
@@ -105,7 +115,6 @@ provide('Popover', {
         <div
           v-if="typeof modelValue === 'boolean' ? defaultModel : flux.status"
           ref="panel"
-          v-on-click-outside="flux.close"
           tabindex="-1"
           class="Popover-Panel"
           :class="{

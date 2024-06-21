@@ -1,12 +1,12 @@
 import { resolve } from 'node:path';
 import vue from '@vitejs/plugin-vue';
 import { internalIPv4 } from 'private-ip-address';
+import envify from 'process-envify';
+import tailwindColors from 'tailwindcss/colors';
+import { presetIcons, presetUno, presetWebFonts, transformerDirectives } from 'unocss';
+import unocss from 'unocss/vite';
 import { defineConfig } from 'vite';
 import vueRoutes from 'vite-plugin-vue-routes';
-import tailwindColors from 'tailwindcss/colors';
-import { presetIcons, presetUno, transformerDirectives } from 'unocss';
-import unocss from 'unocss/vite';
-import envify from 'process-envify';
 
 const mobile = !!/android|ios/.exec(process.env.TAURI_ENV_PLATFORM!);
 
@@ -18,7 +18,16 @@ export default defineConfig(async () => ({
     vue(),
     vueRoutes(),
     unocss({
-      presets: [presetUno(), presetIcons()],
+      presets: [
+        presetUno(),
+        presetIcons(),
+        presetWebFonts({
+          fonts: {
+            sans: ['Roboto:400,500,600,700,800'],
+            mono: ['Roboto Mono:400,500,600,700,800'],
+          },
+        }),
+      ],
       transformers: [transformerDirectives({ enforce: 'pre' })],
       theme: {
         colors: {

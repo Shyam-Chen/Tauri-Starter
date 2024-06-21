@@ -1,6 +1,6 @@
 name: my-app
 options:
-  bundleIdPrefix: tauri.starter
+  bundleIdPrefix: tauri.starter.dev
   deploymentTarget:
     iOS: 13.0
 fileGroups: [../../src]
@@ -11,7 +11,7 @@ settingGroups:
   app:
     base:
       PRODUCT_NAME: Tauri Starter
-      PRODUCT_BUNDLE_IDENTIFIER: tauri.starter.my-app
+      PRODUCT_BUNDLE_IDENTIFIER: tauri.starter.dev
       DEVELOPMENT_TEAM: DEVELOPMENT_TEAM
 targetTemplates:
   app:
@@ -36,6 +36,7 @@ targets:
       - path: assets
         buildPhase: resources
         type: folder
+      - path: LaunchScreen.storyboard
     info:
       path: my-app_iOS/Info.plist
       properties:
@@ -86,5 +87,6 @@ targets:
         name: Build Rust Code
         basedOnDependencyAnalysis: false
         outputFiles:
-          - $(SRCROOT)/target/aarch64-apple-ios/${CONFIGURATION}/deps/libtauri_lib.a
-          - $(SRCROOT)/target/x86_64-apple-ios/${CONFIGURATION}/deps/libtauri_lib.a
+          - $(SRCROOT)/Externals/x86_64/${CONFIGURATION}/libtauri_lib.a
+          - $(SRCROOT)/Externals/arm64/${CONFIGURATION}/libtauri_lib.a
+          - $(SRCROOT)/Externals/arm64-sim/${CONFIGURATION}/libtauri_lib.a
