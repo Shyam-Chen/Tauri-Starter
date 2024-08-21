@@ -56,7 +56,7 @@ $ pnpm install
 
 ### iOS
 
-![iOS](./ios.png)
+![iOS](./.github/assets/ios.png)
 
 ```sh
 $ sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
@@ -84,7 +84,7 @@ $ pnpm tauri ios build
 
 ### macOS
 
-![macOS](./macos.png)
+![macOS](./.github/assets/macos.png)
 
 ```sh
 $ pnpm tauri dev
@@ -97,7 +97,7 @@ $ pnpm tauri build
 <details>
   <summary><h3>Android</h3></summary>
 
-![Android](./android.png)
+![Android](./.github/assets/android.png)
 
 ```sh
 $ cd Library/Android/sdk/ndk/
@@ -123,6 +123,8 @@ $ pnpm tauri android build
 
 <details>
   <summary><h3>Windows</h3></summary>
+
+![Windows](./.github/assets/windows.png)
 
 ```sh
 $ pnpm tauri dev
@@ -227,11 +229,11 @@ The structure follows the LIFT Guidelines.
 │   ├── tsconfig.json
 │   └── vite.config.ts
 ├── .editorconfig
-├── .eslintrc
 ├── .gitignore
-├── .prettierrc
+├── eslint.config.js
 ├── package.json
 ├── pnpm-lock.yaml
 ├── pnpm-workspace.yaml
+├── prettier.config.js
 └── README.md
 ```
