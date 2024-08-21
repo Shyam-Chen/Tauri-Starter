@@ -9,6 +9,7 @@ import { defineConfig } from 'vite';
 import vueRoutes from 'vite-plugin-vue-routes';
 
 const mobile = !!/android|ios/.exec(process.env.TAURI_ENV_PLATFORM!);
+const host = process.env.TAURI_DEV_HOST;
 
 export default defineConfig(async () => ({
   define: envify({
@@ -59,8 +60,8 @@ export default defineConfig(async () => ({
     },
     port: 1420,
     strictPort: true,
-    host: mobile ? internalIPv4() : false,
-    hmr: mobile ? { protocol: 'ws', host: internalIPv4(), port: 1421 } : undefined,
+    host: mobile ? host : false,
+    hmr: mobile ? { protocol: 'ws', host, port: 1430 } : undefined,
     watch: {
       ignored: ['**/src-tauri/**'],
     },

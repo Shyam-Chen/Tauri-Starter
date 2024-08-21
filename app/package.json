@@ -10,8 +10,8 @@
     "clean:android": "rimraf ./src-tauri/gen/android"
   },
   "dependencies": {
-    "@tauri-apps/api": "2.0.0-beta.13",
-    "@tauri-apps/plugin-shell": "2.0.0-beta.6",
+    "@tauri-apps/api": "2.0.0-rc.2",
+    "@tauri-apps/plugin-shell": "2.0.0-rc.0",
     "@unocss/reset": "0.61.0",
     "@vueuse/components": "10.11.0",
     "@vueuse/core": "10.11.0",
@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@iconify/json": "2.2.219",
-    "@tauri-apps/cli": "2.0.0-beta.20",
+    "@tauri-apps/cli": "2.0.0-rc.6",
     "@types/lodash": "4.17.5",
     "@types/nprogress": "0.2.3",
     "@vitejs/plugin-vue": "5.0.5",
