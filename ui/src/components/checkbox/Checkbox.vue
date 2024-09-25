@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import type { InputHTMLAttributes } from 'vue';
-import { computed } from 'vue';
-import uniqueId from 'lodash/uniqueId';
+import { computed, useId } from 'vue';
 
 interface Props extends /* @vue-ignore */ InputHTMLAttributes {
+  label?: string;
   value?: boolean;
   checked?: boolean;
   indeterminate?: boolean;
@@ -27,15 +27,15 @@ const valueModel = computed({
   set: (val) => !props.readonly && emit('update:value', val),
 });
 
-const uid = uniqueId('uid-');
+const id = useId();
 </script>
 
 <template>
   <div class="Checkbox-Wrapper">
-    <label class="Checkbox-Label" :class="{ disabled, readonly }">
+    <label :for="id" class="Checkbox-Label" :class="{ disabled, readonly }">
       <div class="Checkbox-Container">
         <input
-          :id="uid"
+          :id
           v-model="valueModel"
           v-bind="$attrs"
           type="checkbox"
@@ -58,6 +58,7 @@ const uid = uniqueId('uid-');
       </div>
 
       <div class="Checkbox-Text">
+        {{ label }}
         <slot></slot>
       </div>
     </label>

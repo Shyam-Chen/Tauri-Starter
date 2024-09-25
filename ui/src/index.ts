@@ -30,6 +30,7 @@ export { default as XDropzone } from './components/dropzone/Dropzone.vue';
 export { default as XFade } from './components/fade/Fade.vue';
 export { default as XFileInput } from './components/file-input/FileInput.vue';
 export { default as XFormControl } from './components/form-control/FormControl.vue';
+export { default as XHashAnchor } from './components/hash-anchor/HashAnchor.vue';
 export { default as XHighlight } from './components/highlight/Highlight.vue';
 export { default as XInputMask } from './components/input-mask/InputMask.vue';
 export { default as XIterator } from './components/iterator/Iterator.vue';
@@ -43,12 +44,14 @@ export { default as XMonthRangePicker } from './components/month-range-picker/Mo
 export { default as XMultiautocomplete } from './components/multiautocomplete/Multiautocomplete.vue';
 export { default as XMultiselect } from './components/multiselect/Multiselect.vue';
 export { default as XNotification } from './components/notification/Notification.vue';
+export { default as XOutline } from './components/outline/Outline.vue';
 export { default as XPagination } from './components/pagination/Pagination.vue';
 export { default as XPanel } from './components/panel/Panel.vue';
 export { default as XPassword } from './components/password/Password.vue';
 export { default as XPopover } from './components/popover/Popover.vue';
 export { default as XProgressBar } from './components/progress-bar/ProgressBar.vue';
 export { default as XProgressCircle } from './components/progress-circle/ProgressCircle.vue';
+export { default as XPullToRefresh } from './components/pull-to-refresh/PullToRefresh.vue';
 export { default as XRadioGroup } from './components/radio-group/RadioGroup.vue';
 export { default as XRangeSlider } from './components/range-slider/RangeSlider.vue';
 export { default as XRichTextEditor } from './components/rich-text-editor/RichTextEditor.vue';
@@ -75,6 +78,7 @@ export { default as XYearPicker } from './components/year-picker/YearPicker.vue'
 
 export { default as useEventSource } from './composables/eventsource/useEventSource';
 export { default as useNotification } from './composables/notification/useNotification';
+export { default as useOutline } from './composables/outline/useOutline';
 export { default as useScrollParent } from './composables/scroll-parent/useScrollParent';
 export { default as useValdnLocale } from './composables/valdn-locale/useValdnLocale';
 export { default as useWebSocket } from './composables/websocket/useWebSocket';
@@ -82,3 +86,4 @@ export { default as useWebSocket } from './composables/websocket/useWebSocket';
 export { default as queueGuard } from './utilities/queue-guard/queueGuard';
 export { default as request } from './utilities/request/request';
 export { default as staticTable } from './utilities/static-table/staticTable';
+export { default as stream } from './utilities/stream';

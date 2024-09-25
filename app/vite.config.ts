@@ -3,7 +3,8 @@ import vue from '@vitejs/plugin-vue';
 import { internalIPv4 } from 'private-ip-address';
 import envify from 'process-envify';
 import tailwindColors from 'tailwindcss/colors';
-import { presetIcons, presetUno, presetWebFonts, transformerDirectives } from 'unocss';
+import { presetIcons, presetTypography, presetUno, presetWebFonts } from 'unocss';
+import { transformerDirectives } from 'unocss';
 import unocss from 'unocss/vite';
 import { defineConfig } from 'vite';
 import vueRoutes from 'vite-plugin-vue-routes';
@@ -21,6 +22,7 @@ export default defineConfig(async () => ({
     unocss({
       presets: [
         presetUno(),
+        presetTypography(),
         presetIcons(),
         presetWebFonts({
           fonts: {
@@ -50,6 +52,13 @@ export default defineConfig(async () => ({
     },
     mainFields: ['module'],
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        api: 'modern',
+      },
+    },
+  },
   clearScreen: false,
   server: {
     proxy: {
@@ -65,5 +74,9 @@ export default defineConfig(async () => ({
     watch: {
       ignored: ['**/src-tauri/**'],
     },
+  },
+  test: {
+    globals: true,
+    environment: 'happy-dom',
   },
 }));

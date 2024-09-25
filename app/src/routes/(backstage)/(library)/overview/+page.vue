@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { RouterLink } from 'vue-router';
-
 import { XBreadcrumb } from '@x/ui';
 </script>
 
@@ -40,6 +39,7 @@ import { XBreadcrumb } from '@x/ui';
       <RouterLink to="/navigation/breadcrumbs" class="card">Breadcrumb</RouterLink>
       <RouterLink to="/navigation/drawers" class="card">Drawer</RouterLink>
       <RouterLink to="/navigation/dropdown" class="card">Dropdown</RouterLink>
+      <RouterLink to="/navigation/outline" class="card">Outline</RouterLink>
       <RouterLink to="/navigation/pagination" class="card">Pagination</RouterLink>
       <RouterLink to="/navigation/scrollspy" class="card">Scrollspy</RouterLink>
       <RouterLink to="/navigation/stepper" class="card">Stepper</RouterLink>
@@ -56,8 +56,7 @@ import { XBreadcrumb } from '@x/ui';
       <RouterLink to="/data-entry/autocompletes" class="card">Multiautocomplete</RouterLink>
       <RouterLink to="/data-entry/checkbox-group" class="card">CheckboxGroup</RouterLink>
       <RouterLink to="/data-entry/checkboxes" class="card">Checkbox</RouterLink>
-      <RouterLink to="/data-entry/editor" class="card">RichTextEditor</RouterLink>
-      <RouterLink to="/data-entry/file-inputs" class="card">FileInput</RouterLink>
+      <RouterLink to="/data-entry/chip-field" class="card">ChipField</RouterLink>
       <RouterLink to="/data-entry/form-validation" class="card">Form Validation</RouterLink>
       <RouterLink to="/data-entry/input-mask" class="card">InputMask</RouterLink>
       <RouterLink to="/data-entry/password" class="card">Password</RouterLink>
@@ -67,13 +66,18 @@ import { XBreadcrumb } from '@x/ui';
       <RouterLink to="/data-entry/pickers/year-pickers" class="card">YearPicker</RouterLink>
       <RouterLink to="/data-entry/pickers/week-pickers" class="card">WeekPicker</RouterLink>
       <RouterLink to="/data-entry/radio-buttons" class="card">RadioGroup</RouterLink>
+      <RouterLink to="/data-entry/rich-text-editor" class="card">RichTextEditor</RouterLink>
       <RouterLink to="/data-entry/selects/single-selects" class="card">Select</RouterLink>
       <RouterLink to="/data-entry/selects/multiple-selects" class="card">Multiselect</RouterLink>
+      <RouterLink to="/data-entry/selects/tree-select" class="card">TreeSelect</RouterLink>
       <RouterLink to="/data-entry/slider" class="card">Slider</RouterLink>
       <RouterLink to="/data-entry/switches" class="card">Switch</RouterLink>
       <RouterLink to="/data-entry/text-fields" class="card">TextField</RouterLink>
       <RouterLink to="/data-entry/textareas" class="card">Textarea</RouterLink>
       <RouterLink to="/data-entry/transfer" class="card">Transfer</RouterLink>
+      <RouterLink to="/data-entry/upload-files/dropzone" class="card">Dropzone</RouterLink>
+      <RouterLink to="/data-entry/upload-files/file-button" class="card">FileButton</RouterLink>
+      <RouterLink to="/data-entry/upload-files/file-input" class="card">FileInput</RouterLink>
     </div>
   </div>
 
@@ -86,14 +90,17 @@ import { XBreadcrumb } from '@x/ui';
       <RouterLink to="/data-display/badge" class="card">Badge</RouterLink>
       <RouterLink to="/data-display/calendar" class="card">Calendar</RouterLink>
       <RouterLink to="/data-display/card" class="card">Card</RouterLink>
+      <RouterLink to="/data-display/cropper" class="card">Cropper</RouterLink>
       <RouterLink to="/data-display/carousel" class="card">Carousel</RouterLink>
       <RouterLink to="/data-display/chip" class="card">Chip</RouterLink>
       <RouterLink to="/data-display/infinite-scroll" class="card">Infinite Scroll</RouterLink>
       <RouterLink to="/data-display/iterator" class="card">Iterator</RouterLink>
+      <RouterLink to="/data-display/listbox" class="card">Listbox</RouterLink>
       <RouterLink to="/data-display/popover" class="card">Popover</RouterLink>
-      <RouterLink to="/data-display/table/dynamic-table" classß="card">Dynamic Table</RouterLink>
+      <RouterLink to="/data-display/table/dynamic-table" class="card">Dynamic Table</RouterLink>
       <RouterLink to="/data-display/table/static-table" class="card">Static Table</RouterLink>
       <RouterLink to="/data-display/tag" class="card">Tag</RouterLink>
+      <RouterLink to="/data-display/time-ago" class="card">Time Ago</RouterLink>
       <RouterLink to="/data-display/timeline" class="card">Timeline</RouterLink>
       <RouterLink to="/data-display/tooltip" class="card">Tooltip</RouterLink>
       <RouterLink to="/data-display/tree" class="card">Tree</RouterLink>
@@ -115,6 +122,7 @@ import { XBreadcrumb } from '@x/ui';
       <RouterLink to="/feedback/meter-group" class="card">MeterGroup</RouterLink>
       <RouterLink to="/feedback/notification" class="card">Notification</RouterLink>
       <RouterLink to="/feedback/progress" class="card">Progress</RouterLink>
+      <RouterLink to="/feedback/pull-to-refresh" class="card">PullToRefresh</RouterLink>
       <RouterLink to="/feedback/skeletons" class="card">Skeleton</RouterLink>
     </div>
   </div>

@@ -1,4 +1,4 @@
-import { resolve } from 'node:path';
+import { resolve } from 'path';
 import envify from 'process-envify';
 import { defineConfig } from 'vite';
 import fastify from 'vite-plugin-fastify';

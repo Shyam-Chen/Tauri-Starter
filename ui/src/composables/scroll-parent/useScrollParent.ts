@@ -1,5 +1,5 @@
 import type { Ref } from 'vue';
-import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { ref, watch, onMounted, onUnmounted } from 'vue';
 
 import scrollableParent from './scrollableParent';
 
@@ -13,7 +13,7 @@ export default (target: Ref<HTMLElement | undefined> | undefined, handleScroll: 
       scrollParent.value = scrollableParent(el);
       scrollParent.value?.addEventListener('scroll', handleScroll);
 
-      scrollGrandparent.value = scrollableParent(scrollParent.value?.parentNode);
+      scrollGrandparent.value = scrollableParent(scrollParent.value?.parentElement);
       scrollGrandparent.value?.addEventListener('scroll', handleScroll);
     },
   );

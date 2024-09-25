@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { XBreadcrumb, XButton, XCard, XChip, XPopover, XListbox } from '@x/ui';
+import { XBreadcrumb, XButton, XCard, XChip, XListbox, XPopover } from '@x/ui';
 
 const searchLoading = ref(false);
 
@@ -89,6 +89,26 @@ const buttonGroup = ref(0);
 
     <XCard>
       <div class="space-y-4">
+        <div class="flex gap-4">
+          <XButton
+            icon="i-material-symbols-search-rounded"
+            size="small"
+            :loading="searchLoading"
+            @click="search"
+          />
+          <XButton
+            icon="i-material-symbols-search-rounded"
+            :loading="searchLoading"
+            @click="search"
+          />
+          <XButton
+            icon="i-material-symbols-search-rounded"
+            size="large"
+            :loading="searchLoading"
+            @click="search"
+          />
+        </div>
+
         <XButton
           prepend="i-material-symbols-search-rounded"
           label="Search"
@@ -200,7 +220,7 @@ const buttonGroup = ref(0);
         <div class="flex justify-end">
           <div>
             <XButton.Group>
-              <XButton prepend="i-material-symbols-add-rounded" label="Add" />
+              <XButton prepend="i-material-symbols-add-rounded" label="New" />
 
               <XPopover>
                 <XButton prepend="i-material-symbols-keyboard-arrow-down-rounded" />

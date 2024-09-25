@@ -1,29 +1,10 @@
 <script lang="ts" setup>
 import { computed, reactive, toRef, onMounted } from 'vue';
-import { useValibotSchema } from 'vue-formor';
+import { useSchema } from 'vue-formor';
 import { useLocaler } from 'vue-localer';
-import {
-  XCard,
-  XTextField,
-  XSelect,
-  XRadioGroup,
-  XTextarea,
-  XCheckbox,
-  XDatePicker,
-  XButton,
-} from '@x/ui';
-import { useValdnLocale } from '@x/ui';
-import {
-  nullish,
-  object,
-  string,
-  number,
-  email,
-  minLength,
-  minValue,
-  literal,
-  custom,
-} from 'valibot';
+import { XButton, XCard, XCheckbox, XDatePicker, XRadioGroup, XSelect, XTextField } from '@x/ui';
+import { XTextarea, XMultiselect, useValdnLocale } from '@x/ui';
+import * as v from 'valibot';
 
 interface BasicForm {
   username?: string;
@@ -33,6 +14,7 @@ interface BasicForm {
   pronouns?: 1 | 2 | 3;
   urlPasteBehavior?: 1 | 2;
   birthday?: string;
+  topics?: string[];
   bio?: string;
   agreed?: boolean;
 }
@@ -46,36 +28,46 @@ const state = reactive({
   touched: {} as Record<keyof BasicForm, boolean>,
 });
 
-const schema = useValibotSchema(
+const schema = useSchema(
   computed(() =>
-    object({
-      username: nullish(string([minLength(1, valdnLocale.value.required)]), ''),
-      email: nullish(
-        string([minLength(1, valdnLocale.value.required), email(valdnLocale.value.email)]),
+    v.object({
+      username: v.nullish(v.pipe(v.string(), v.minLength(1, valdnLocale.value.required)), ''),
+      email: v.nullish(
+        v.pipe(
+          v.string(),
+          v.minLength(1, valdnLocale.value.required),
+          v.email(valdnLocale.value.email),
+        ),
         '',
       ),
-      password: nullish(
-        string([
-          minLength(1, valdnLocale.value.required),
-          minLength(8, localer.f(valdnLocale.value.minLength, [8])),
-        ]),
+      password: v.nullish(
+        v.pipe(
+          v.string(),
+          v.minLength(1, valdnLocale.value.required),
+          v.minLength(8, localer.f(valdnLocale.value.minLength, [8])),
+        ),
         '',
       ),
-      confirmPassword: nullish(
-        string([
-          minLength(1, valdnLocale.value.required),
-          custom(
+      confirmPassword: v.nullish(
+        v.pipe(
+          v.string(),
+          v.minLength(1, valdnLocale.value.required),
+          v.check(
             (input) => state.form.password === input,
             'Password and Confirm Password must be match',
           ),
-        ]),
+        ),
         '',
       ),
-      pronouns: nullish(number([minValue(1, valdnLocale.value.required)]), 0),
-      urlPasteBehavior: nullish(number([minValue(1, valdnLocale.value.required)]), 0),
-      birthday: nullish(string([minLength(1, valdnLocale.value.required)]), ''),
-      bio: nullish(string([minLength(1, valdnLocale.value.required)]), ''),
-      agreed: literal(true, valdnLocale.value.required),
+      pronouns: v.nullish(v.pipe(v.number(), v.minValue(1, valdnLocale.value.required)), 0),
+      urlPasteBehavior: v.nullish(v.pipe(v.number(), v.minValue(1, valdnLocale.value.required)), 0),
+      birthday: v.nullish(v.pipe(v.string(), v.minLength(1, valdnLocale.value.required)), ''),
+      topics: v.nullish(
+        v.pipe(v.array(v.string()), v.minLength(1, valdnLocale.value.required)),
+        [],
+      ),
+      bio: v.nullish(v.pipe(v.string(), v.minLength(1, valdnLocale.value.required)), ''),
+      agreed: v.literal(true, valdnLocale.value.required),
     }),
   ),
   toRef(state, 'form'),
@@ -165,6 +157,21 @@ const submit = () => {
           required
           :invalid="state.valdn.birthday"
           @blur="state.touched.birthday = true"
+        />
+
+        <XMultiselect
+          v-model:value="state.form.topics"
+          label="Topics"
+          :options="[
+            { label: 'Vue', value: 'vue' },
+            { label: 'Tauri', value: 'tauri' },
+            { label: 'Fastify', value: 'fastify' },
+            { label: 'Pulumi', value: 'pulumi' },
+          ]"
+          filterable
+          required
+          :invalid="state.valdn.topics"
+          @blur="state.touched.topics = true"
         />
 
         <div class="md:col-span-2">

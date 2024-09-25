@@ -1,21 +1,17 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue';
-import { XBreadcrumb, XCard, XRichTextEditor, XButton } from '@x/ui';
+import { XBreadcrumb, XButton, XCard, XRichTextEditor } from '@x/ui';
 
 const content = ref('');
 
 onMounted(() => {
-  content.value = `<h1>h1. Heading</h1>`;
+  content.value = `<h3>Heading</h3>`;
 });
 
 function setContent() {
   const newContent = `
-    <h1>h1. Heading</h1>
-    <h2>h2. Heading</h2>
-    <h3>h3. Heading</h3>
-    <h4>h4. Heading</h4>
-    <h5>h5. Heading</h5>
-    <h6>h6. Heading</h6>
+    <h3>Heading</h3>
+    <h4>Subheading</h4>
 
     <p><span style="color: #FE68C9">Text Color</span></p>
 
@@ -61,7 +57,23 @@ function setContent() {
   </section>
 
   <section class="my-8">
-    <h2 class="text-3xl font-bold my-4 pt-6">Viewonly</h2>
+    <h2 class="text-3xl font-bold my-4 pt-6">Invalid</h2>
+
+    <XCard>
+      <XRichTextEditor v-model="content" invalid="Incorrect entry" />
+    </XCard>
+  </section>
+
+  <section class="my-8">
+    <h2 class="text-3xl font-bold my-4 pt-6">Read-only</h2>
+
+    <XCard>
+      <XRichTextEditor v-model="content" readonly />
+    </XCard>
+  </section>
+
+  <section class="my-8">
+    <h2 class="text-3xl font-bold my-4 pt-6">View-only</h2>
 
     <XCard>
       <XRichTextEditor v-model="content" viewonly />

@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { XBreadcrumb, XCard, XButton } from '@x/ui';
-import { request } from '@x/ui';
+import { XBreadcrumb, XButton, XCard, request } from '@x/ui';
 
-const text = ref();
+const text = ref<string>();
 
 const doFetch = async () => {
   const { _data } = await request<{ message: string }>('/hello-world', { method: 'GET' });

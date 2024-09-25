@@ -17,6 +17,10 @@ interface Props extends /* @vue-ignore */ TextFieldProps {
   help?: string;
 }
 
+defineOptions({
+  inheritAttrs: false,
+});
+
 const valueModel = defineModel<string>('value', { default: '' });
 
 defineProps<Props>();
@@ -37,11 +41,11 @@ const symbols = /[!@#$%^&*()+_\-=}{[\]|:;"/?><,`~]/; // !@#$%^&*()+_-=}{[]|:;"/?
 </script>
 
 <template>
-  <FormControl v-slot="{ uid }" :label :required :invalid :help>
-    <Popover v-model="status" class="w-full">
+  <FormControl v-slot="{ id }" :label :required :invalid :help>
+    <Popover v-model="status" start class="w-full">
       <div class="w-full" @click="meter && (status = true)">
         <TextField
-          :id="uid"
+          :id
           v-model:value="valueModel"
           v-bind="$attrs"
           :type="show ? 'text' : 'password'"

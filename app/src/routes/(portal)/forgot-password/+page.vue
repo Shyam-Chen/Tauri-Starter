@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { reactive } from 'vue';
 import { RouterLink } from 'vue-router';
-import { XTextField, XButton, XLink } from '@x/ui';
+import { XButton, XLink, XTextField } from '@x/ui';
 
 import useStore from './store';
 import useSchema from './schema';
@@ -102,7 +102,7 @@ const flux = reactive({
       </div>
 
       <div class="mb-8">
-        <XTextField :value="'2803bn3VO7'" readonly>Your New Password:</XTextField>
+        <XTextField value="2803bn3VO7" readonly>Your New Password:</XTextField>
       </div>
 
       <RouterLink

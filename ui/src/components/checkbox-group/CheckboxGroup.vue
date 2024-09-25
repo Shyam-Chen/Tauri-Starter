@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import type { InputHTMLAttributes } from 'vue';
 
-import FormControl from '../form-control/FormControl.vue';
 import Checkbox from '../checkbox/Checkbox.vue';
+import FormControl from '../form-control/FormControl.vue';
 
 interface Props extends /* @vue-ignore */ InputHTMLAttributes {
   label?: string;
@@ -39,13 +39,13 @@ function onChange(val: unknown) {
 </script>
 
 <template>
-  <FormControl v-slot="{ uid }" :label :required :invalid :help>
+  <FormControl v-slot="{ id }" :label :required :invalid :help>
     <div class="flex flex-wrap items-center gap-4">
       <Checkbox
         v-for="(item, index) in options"
         v-bind="$attrs"
         :key="index"
-        :name="uid"
+        :name="id"
         :value="valueModel.includes(typeof item === 'object' ? item.value : item)"
         :invalid="Boolean(invalid)"
         @change="onChange(typeof item === 'object' ? item.value : item)"

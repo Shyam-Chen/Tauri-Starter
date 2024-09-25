@@ -4,6 +4,7 @@ import { XBreadcrumb, XCard, XSelect } from '@x/ui';
 
 import WithTable from './WithTable.vue';
 import WithTableInDialog from './WithTableInDialog.vue';
+import WithinPopover from './WithinPopover.vue';
 
 const flux = reactive({
   select1: '',
@@ -31,11 +32,7 @@ const flux = reactive({
     <h2 class="text-3xl font-bold my-4">Basic</h2>
 
     <XCard>
-      <XSelect
-        v-model:value="flux.select1"
-        :label="'Example label'"
-        :options="flux.select1Options"
-      />
+      <XSelect v-model:value="flux.select1" label="Example label" :options="flux.select1Options" />
     </XCard>
   </section>
 
@@ -45,7 +42,7 @@ const flux = reactive({
     <XCard>
       <XSelect
         v-model:value="flux.select1"
-        :label="'Example label'"
+        label="Example label"
         :options="flux.select1Options"
         disabled
       />
@@ -102,6 +99,14 @@ const flux = reactive({
         <WithTableInDialog />
       </XCard>
     </section>
+  </section>
+
+  <section class="my-8">
+    <h2 class="text-3xl font-bold my-4 pt-6">Within Popover</h2>
+
+    <XCard>
+      <WithinPopover />
+    </XCard>
   </section>
 
   <section class="my-8">

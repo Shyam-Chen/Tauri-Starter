@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { XBreadcrumb, XTable, XButton } from '@x/ui';
+import { XBreadcrumb, XButton, XTable } from '@x/ui';
 
 type TreeTableNode = {
   key?: string;
@@ -107,7 +107,7 @@ function treeNode(item: TreeTableNode) {
 <template>
   <XBreadcrumb :items="[{ text: 'Library' }, { text: 'Data Display' }, { text: 'TreeTable' }]" />
 
-  <h1 class="text-4xl font-extrabold my-4">TreeTable</h1>
+  <h1 class="text-4xl font-extrabold my-4">TreeTable (WIP)</h1>
 
   <div class="TreeTable-Wrapper">
     <table class="TreeTable-Element">

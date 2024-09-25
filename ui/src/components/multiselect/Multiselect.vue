@@ -1,15 +1,18 @@
 <script lang="ts" setup>
+import type { ComponentProps } from 'vue-component-type-helpers';
 import { nextTick, ref, reactive, computed, watch, watchEffect } from 'vue';
 import { useLocaler, useLocale } from 'vue-localer';
 import { onClickOutside } from '@vueuse/core';
 
-import FormControl from '../form-control/FormControl.vue';
 import Checkbox from '../checkbox/Checkbox.vue';
 import Chip from '../chip/Chip.vue';
-import TextField from '../text-field/TextField.vue';
-import ProgressBar from '../progress-bar/ProgressBar.vue';
 import Fade from '../fade/Fade.vue';
+import FormControl from '../form-control/FormControl.vue';
+import ProgressBar from '../progress-bar/ProgressBar.vue';
+import TextField from '../text-field/TextField.vue';
 import useScrollParent from '../../composables/scroll-parent/useScrollParent';
+
+type ChipProps = ComponentProps<typeof Chip>;
 
 type Option = {
   checked?: boolean;
@@ -17,6 +20,7 @@ type Option = {
   value: string | number;
   [key: string]: unknown;
   options?: Options;
+  color?: ChipProps['color'];
 };
 
 type Options = Option[];
@@ -53,6 +57,7 @@ const props = withDefaults(
 const emit = defineEmits<{
   (evt: 'update:value', val?: Option['value'][] | null): void;
   (evt: 'change', val?: Option['value'] | null, opt?: Option | null): void;
+  (evt: 'blur'): void;
 }>();
 
 const localer = useLocaler();
@@ -131,6 +136,7 @@ const flux = reactive({
       'update:value',
       flux.selected.map((item) => item.value),
     );
+    emit('change');
   },
 });
 
@@ -264,6 +270,15 @@ useScrollParent(
     if (flux.show) resizePanel();
   },
 );
+
+watch(
+  () => flux.show,
+  (val) => {
+    if (!val) {
+      emit('blur');
+    }
+  },
+);
 </script>
 
 <template>
@@ -325,8 +340,10 @@ useScrollParent(
             <Chip
               v-for="item in flux.selected"
               :key="item.value"
+              :color="item.color"
               :closable="clearable || selectedStatus"
-              :disabled="disabled"
+              :disabled
+              class="!opacity-100"
               @close="flux.clear(item.value)"
             >
               {{ flux.display(item) }}

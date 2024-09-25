@@ -1,20 +1,22 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
-import { XBreadcrumb, XCard, XButton, XTextField } from '@x/ui';
-import { useEventSource } from '@x/ui';
-import { request } from '@x/ui';
+import { ref, onMounted } from 'vue';
+import { XBreadcrumb, XCard, useEventSource, stream } from '@x/ui';
+
+import TriggerEventById from './TriggerEventById.vue';
 
 const { data } = useEventSource('/sse');
-const { data: dataEvent } = useEventSource('/sse/event');
 
-const message = ref('Test');
+// -
 
-const doFetch = async () => {
-  await request<{ message: string }>('/sse/event', {
-    method: 'POST',
-    body: { message: message.value },
-  });
-};
+const eventData = ref<string>();
+
+onMounted(async () => {
+  const events = await stream('/sse');
+
+  for await (const event of events) {
+    eventData.value = event.data;
+  }
+});
 </script>
 
 <template>
@@ -33,16 +35,20 @@ const doFetch = async () => {
   </section>
 
   <section class="my-8">
-    <h2 class="text-3xl font-bold my-4">Trigger Events</h2>
+    <h2 class="text-3xl font-bold my-4 pt-6">Fetch</h2>
 
     <XCard>
-      <div class="flex flex-col gap-4">
-        <div class="flex gap-4">
-          <XButton @click="doFetch">Trigger</XButton>
-          <XTextField v-model:value="message" />
-        </div>
-        <pre v-if="dataEvent">{{ JSON.parse(dataEvent) }}</pre>
+      <div class="flex justify-center">
+        <div>{{ eventData }}</div>
       </div>
+    </XCard>
+  </section>
+
+  <section class="my-8">
+    <h2 class="text-3xl font-bold my-4 pt-6">Trigger Event by ID</h2>
+
+    <XCard>
+      <TriggerEventById />
     </XCard>
   </section>
 </template>

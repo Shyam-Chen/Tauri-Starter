@@ -1,13 +1,22 @@
-const scrollableParent = (node?: Node | ParentNode | null): HTMLElement | undefined => {
-  const isElement = node instanceof HTMLElement;
-  const overflow = isElement && window.getComputedStyle(node).overflow;
-  const isScrollable = overflow !== 'visible' && overflow !== 'hidden';
-  const hasScrollbarY = isElement && node.scrollHeight > node.clientHeight;
-  const hasScrollbarX = isElement && node.scrollWidth > node.clientWidth;
+export default (el?: HTMLElement | null): HTMLElement | undefined => {
+  if (!el) return undefined;
 
-  if (!node) return undefined;
-  if (isScrollable && (hasScrollbarY || hasScrollbarX)) return node;
-  return scrollableParent(node.parentNode);
+  let parent = el.parentElement;
+
+  while (parent) {
+    const { overflow } = window.getComputedStyle(parent);
+    const hasScrollbarY = parent.scrollHeight > parent.clientHeight;
+    const hasScrollbarX = parent.scrollWidth > parent.clientWidth;
+
+    if (
+      (overflow.includes('auto') || overflow.includes('scroll')) &&
+      (hasScrollbarY || hasScrollbarX)
+    ) {
+      return parent;
+    }
+
+    parent = parent.parentElement;
+  }
+
+  return document.documentElement;
 };
-
-export default scrollableParent;

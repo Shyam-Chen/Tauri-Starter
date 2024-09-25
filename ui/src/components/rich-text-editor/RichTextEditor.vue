@@ -6,54 +6,52 @@ import Blockquote from '@tiptap/extension-blockquote';
 import Bold from '@tiptap/extension-bold';
 import BulletList from '@tiptap/extension-bullet-list';
 import Color from '@tiptap/extension-color';
-import Highlight from '@tiptap/extension-highlight';
 import Document from '@tiptap/extension-document';
 import Dropcursor from '@tiptap/extension-dropcursor';
 import Gapcursor from '@tiptap/extension-gapcursor';
 import HardBreak from '@tiptap/extension-hard-break';
 import Heading from '@tiptap/extension-heading';
+import Highlight from '@tiptap/extension-highlight';
 import History from '@tiptap/extension-history';
 import HorizontalRule from '@tiptap/extension-horizontal-rule';
+import Image from '@tiptap/extension-image';
 import Italic from '@tiptap/extension-italic';
+import Link from '@tiptap/extension-link';
 import ListItem from '@tiptap/extension-list-item';
 import OrderedList from '@tiptap/extension-ordered-list';
 import Paragraph from '@tiptap/extension-paragraph';
 import Strike from '@tiptap/extension-strike';
 import Text from '@tiptap/extension-text';
+import TextAlign from '@tiptap/extension-text-align';
 import TextStyle from '@tiptap/extension-text-style';
 import Underline from '@tiptap/extension-underline';
-import TextAlign from '@tiptap/extension-text-align';
-import Image from '@tiptap/extension-image';
-import Link from '@tiptap/extension-link';
 import { useFileDialog } from '@vueuse/core';
 
-import FormControl from '../form-control/FormControl.vue';
 import Divider from '../divider/Divider.vue';
-import Popover from '../popover/Popover.vue';
+import FormControl, { type FormControlProps, formControlDefaults } from '../form-control';
 import Listbox from '../listbox';
+import Popover from '../popover/Popover.vue';
+import Tooltip from '../tooltip/Tooltip.vue';
 
 const defaultModel = defineModel<string>({ default: '' });
 
 const props = withDefaults(
-  defineProps<{
-    label?: string;
-    extension?: Extensions;
-    required?: boolean;
-    invalid?: string | boolean;
-    help?: string;
-    disabled?: boolean;
-    viewonly?: boolean;
-    class?: string;
-  }>(),
+  defineProps<
+    {
+      extension?: Extensions;
+      disabled?: boolean;
+      readonly?: boolean;
+      viewonly?: boolean;
+      class?: string;
+    } & FormControlProps
+  >(),
   {
-    label: '',
     extension: () => [],
-    required: false,
-    invalid: undefined,
-    help: '',
     disabled: false,
+    readonly: false,
     viewonly: false,
     class: '',
+    ...formControlDefaults,
   },
 );
 
@@ -69,9 +67,11 @@ const editorClass = computed(() => {
 
 const typing = ref(false);
 
+const my1 = `margin-top: 0.25rem; margin-bottom: 0.25rem;`;
+
 onMounted(() => {
   editor.value = new Editor({
-    editable: !props.disabled && !props.viewonly,
+    editable: !props.disabled && !props.readonly && !props.viewonly,
     extensions: [
       ...props.extension,
       Heading,
@@ -92,7 +92,213 @@ onMounted(() => {
       OrderedList,
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
 
-      Image.configure({ allowBase64: true }),
+      Image.configure({ allowBase64: true }).extend({
+        addAttributes() {
+          return {
+            src: {
+              default: null,
+            },
+            alt: {
+              default: null,
+            },
+            style: {
+              default: `${my1} width: auto; height: auto;`,
+              parseHTML: (element) => {
+                const width = element.getAttribute('width');
+
+                return width
+                  ? `${my1} width: ${width}px; height: auto;`
+                  : `${my1} ${element.style.cssText}`;
+              },
+            },
+            title: {
+              default: null,
+            },
+            loading: {
+              default: null,
+            },
+            srcset: {
+              default: null,
+            },
+            sizes: {
+              default: null,
+            },
+            crossorigin: {
+              default: null,
+            },
+            usemap: {
+              default: null,
+            },
+            ismap: {
+              default: null,
+            },
+            width: {
+              default: null,
+            },
+            height: {
+              default: null,
+            },
+            referrerpolicy: {
+              default: null,
+            },
+            longdesc: {
+              default: null,
+            },
+            decoding: {
+              default: null,
+            },
+            class: {
+              default: null,
+            },
+            id: {
+              default: null,
+            },
+            name: {
+              default: null,
+            },
+            draggable: {
+              default: true,
+            },
+            tabindex: {
+              default: null,
+            },
+            'aria-label': {
+              default: null,
+            },
+            'aria-labelledby': {
+              default: null,
+            },
+            'aria-describedby': {
+              default: null,
+            },
+          };
+        },
+        addNodeView() {
+          return ({ node, editor, getPos }) => {
+            const {
+              view,
+              options: { editable },
+            } = editor;
+
+            const { style } = node.attrs;
+            const $wrapper = document.createElement('div');
+            const $container = document.createElement('div');
+            const $img = document.createElement('img');
+
+            const dispatchNodeView = () => {
+              if (typeof getPos === 'function') {
+                // Add back the `my-1` class after finishing the image adjustment
+                $img.style.marginTop = '0.25rem';
+                $img.style.marginBottom = '0.25rem';
+
+                const newAttrs = {
+                  ...node.attrs,
+                  style: `${$img.style.cssText}`,
+                };
+
+                view.dispatch(view.state.tr.setNodeMarkup(getPos(), null, newAttrs));
+              }
+            };
+
+            $wrapper.setAttribute('style', `display: flex;`);
+            $wrapper.appendChild($container);
+
+            $container.setAttribute('style', `${style}`);
+            $container.appendChild($img);
+
+            Object.entries(node.attrs).forEach(([key, value]) => {
+              if (value === undefined || value === null) return;
+              if (key === 'style') return; // Do not apply the wrapper styles to the `img` tag
+              $img.setAttribute(key, value);
+            });
+
+            if (!editable) return { dom: $wrapper };
+
+            const dotsPosition = [
+              'top: -4px; left: -4px; cursor: nwse-resize;',
+              'top: -4px; right: -4px; cursor: nesw-resize;',
+              'bottom: -4px; left: -4px; cursor: nesw-resize;',
+              'bottom: -4px; right: -4px; cursor: nwse-resize;',
+            ];
+
+            let isResizing = false;
+            let startX: number, startWidth: number;
+
+            const resizerColor = `#71717a`;
+            const resizerBorder = `border: 1px dashed ${resizerColor};`;
+            const resizerDot = `width: 8px; height: 8px; border: 2px solid ${resizerColor}; border-radius: 50%;`;
+
+            function cleanDots() {
+              if ($container.childElementCount > 2) {
+                for (let i = 0; i < dotsPosition.length; i++) {
+                  $container.removeChild($container.lastChild as Node);
+                }
+              }
+            }
+
+            $container.addEventListener('click', () => {
+              cleanDots();
+
+              $container.setAttribute(
+                'style',
+                `${my1}; position: relative; ${resizerBorder} ${style}`,
+              );
+
+              Array.from({ length: 4 }, (_, index) => {
+                const $dot = document.createElement('div');
+
+                $dot.setAttribute(
+                  'style',
+                  `position: absolute; ${resizerDot} ${dotsPosition[index]}`,
+                );
+
+                $dot.addEventListener('mousedown', (e) => {
+                  e.preventDefault();
+                  isResizing = true;
+                  startX = e.clientX;
+                  startWidth = $container.offsetWidth;
+
+                  const onMouseMove = (e: MouseEvent) => {
+                    if (!isResizing) return;
+                    const deltaX = index % 2 === 0 ? -(e.clientX - startX) : e.clientX - startX;
+                    const newWidth = startWidth + deltaX;
+                    $container.style.width = newWidth + 'px';
+                    $img.style.width = newWidth + 'px';
+                  };
+
+                  const onMouseUp = () => {
+                    if (isResizing) isResizing = false;
+
+                    dispatchNodeView();
+
+                    document.removeEventListener('mousemove', onMouseMove);
+                    document.removeEventListener('mouseup', onMouseUp);
+                  };
+
+                  document.addEventListener('mousemove', onMouseMove);
+                  document.addEventListener('mouseup', onMouseUp);
+                });
+
+                $container.appendChild($dot);
+              });
+            });
+
+            document.addEventListener('click', (e: MouseEvent) => {
+              const $target = e.target as HTMLElement;
+              const isClickInside = $container.contains($target);
+
+              if (!isClickInside) {
+                const containerStyle = $container.getAttribute('style');
+                const newStyle = containerStyle?.replace(resizerBorder, '');
+                $container.setAttribute('style', newStyle as string);
+                cleanDots();
+              }
+            });
+
+            return { dom: $wrapper };
+          };
+        },
+      }),
       Link,
       Blockquote,
       HorizontalRule,
@@ -126,78 +332,80 @@ watch(
 watch(
   () => props.disabled,
   (val) => {
-    editor.value?.setOptions({ editable: !val && !props.viewonly });
+    editor.value?.setOptions({ editable: !val && !props.readonly && !props.viewonly });
   },
 );
+
+const editable = computed(() => !props.disabled && !props.readonly && !props.viewonly);
 
 const textPopover = ref(false);
 
 function toggleHeading(level: 3 | 4) {
-  if (props.disabled || props.viewonly) return;
+  if (!editable.value) return;
   editor.value?.chain().focus().toggleHeading({ level }).run();
   textPopover.value = false;
 }
 
 function setParagraph() {
-  if (props.disabled || props.viewonly) return;
+  if (!editable.value) return;
   editor.value?.chain().focus().setParagraph().run();
   textPopover.value = false;
 }
 
 function setColor(color: string) {
-  if (props.disabled || props.viewonly) return;
+  if (!editable.value) return;
   editor.value?.chain().focus().setColor(color).run();
 }
 
 function toggleHighlight(color: string) {
-  if (props.disabled || props.viewonly) return;
+  if (!editable.value) return;
   editor.value?.chain().focus().toggleHighlight({ color }).run();
 }
 
 function unset() {
-  if (props.disabled || props.viewonly) return;
+  if (!editable.value) return;
   editor.value?.chain().focus().unsetColor().unsetHighlight().run();
 }
 
 function toggleBold() {
-  if (props.disabled || props.viewonly) return;
+  if (!editable.value) return;
   editor.value?.chain().focus().toggleBold().run();
 }
 
 function toggleItalic() {
-  if (props.disabled || props.viewonly) return;
+  if (!editable.value) return;
   editor.value?.chain().focus().toggleItalic().run();
 }
 
 function toggleUnderline() {
-  if (props.disabled || props.viewonly) return;
+  if (!editable.value) return;
   editor.value?.chain().focus().toggleUnderline().run();
 }
 
 function toggleStrike() {
-  if (props.disabled || props.viewonly) return;
+  if (!editable.value) return;
   editor.value?.chain().focus().toggleStrike().run();
 }
 
 function toggleBulletList() {
-  if (props.disabled || props.viewonly) return;
+  if (!editable.value) return;
   editor.value?.chain().focus().toggleBulletList().run();
 }
 
 function toggleOrderedList() {
-  if (props.disabled || props.viewonly) return;
+  if (!editable.value) return;
   editor.value?.chain().focus().toggleOrderedList().run();
 }
 
 function setTextAlign(alignment: 'left' | 'center' | 'right' | 'justify') {
-  if (props.disabled || props.viewonly) return;
+  if (!editable.value) return;
   editor.value?.chain().focus().setTextAlign(alignment).run();
 }
 
 const { open, onChange } = useFileDialog({ accept: 'image/*', reset: true });
 
 async function setImage() {
-  if (props.disabled || props.viewonly) return;
+  if (!editable.value) return;
   open();
 }
 
@@ -220,7 +428,7 @@ onChange((files) => {
 });
 
 function setLink() {
-  if (props.disabled || props.viewonly) return;
+  if (!editable.value) return;
 
   const previousUrl = editor.value?.getAttributes('link').href;
   const url = window.prompt('URL', previousUrl);
@@ -236,12 +444,12 @@ function setLink() {
 }
 
 function toggleBlockquote() {
-  if (props.disabled || props.viewonly) return;
+  if (!editable.value) return;
   editor.value?.chain().focus().toggleBlockquote().run();
 }
 
 function setHorizontalRule() {
-  if (props.disabled || props.viewonly) return;
+  if (!editable.value) return;
   editor.value?.chain().focus().setHorizontalRule().run();
 }
 
@@ -275,8 +483,8 @@ defineExpose({
         class="flex flex-wrap px-2 py-1 border border-b-0 border-slate-400 rounded-t"
       >
         <div class="flex gap-1">
-          <Popover v-model="textPopover" :disabled>
-            <div class="flex items-center cursor-pointer" @click="textPopover = true">
+          <Popover v-model="textPopover" :disabled="!editable">
+            <div class="flex items-center cursor-pointer" @click="editable && (textPopover = true)">
               <div
                 v-if="editor.isActive('heading', { level: 3 })"
                 :class="{ 'text-primary-500': editor.isFocused }"
@@ -313,8 +521,10 @@ defineExpose({
         <Divider orientation="vertical" class="!mx-2" />
 
         <div class="flex gap-1">
-          <Popover :disabled>
-            <div class="i-material-symbols-format-color-text-rounded size-5 cursor-pointer"></div>
+          <Popover :disabled="!editable">
+            <Tooltip title="Text Color" delay="500">
+              <div class="i-material-symbols-format-color-text-rounded size-5 cursor-pointer"></div>
+            </Tooltip>
 
             <template #content>
               <div class="p-4 grid grid-cols-5 gap-2">
@@ -342,8 +552,10 @@ defineExpose({
             </template>
           </Popover>
 
-          <Popover :disabled>
-            <div class="i-material-symbols-format-color-fill-rounded size-5 cursor-pointer"></div>
+          <Popover :disabled="!editable">
+            <Tooltip title="Text Highlight Color" delay="500">
+              <div class="i-material-symbols-format-color-fill-rounded size-5 cursor-pointer"></div>
+            </Tooltip>
 
             <template #content>
               <div class="p-4 grid grid-cols-5 gap-2">
@@ -371,67 +583,83 @@ defineExpose({
             </template>
           </Popover>
 
-          <div
-            class="i-material-symbols-format-clear-rounded size-5 cursor-pointer"
-            @click="unset"
-          ></div>
-        </div>
-
-        <Divider orientation="vertical" class="!mx-2" />
-
-        <div class="flex gap-1">
-          <div
-            class="i-material-symbols-format-bold-rounded size-6 cursor-pointer"
-            :class="{ 'text-primary-500': editor.isActive('bold') && editor.isFocused }"
-            @click="toggleBold"
-          ></div>
-          <div
-            class="i-material-symbols-format-italic-rounded size-6 cursor-pointer"
-            :class="{ 'text-primary-500': editor.isActive('italic') && editor.isFocused }"
-            @click="toggleItalic"
-          ></div>
-          <div
-            class="i-material-symbols-format-underlined-rounded size-6 cursor-pointer"
-            :class="{ 'text-primary-500': editor.isActive('underline') && editor.isFocused }"
-            @click="toggleUnderline"
-          ></div>
-          <div
-            class="i-material-symbols-strikethrough-s-rounded size-6 cursor-pointer"
-            :class="{ 'text-primary-500': editor.isActive('strike') && editor.isFocused }"
-            @click="toggleStrike"
-          ></div>
-        </div>
-
-        <Divider orientation="vertical" class="!mx-2" />
-
-        <div class="flex gap-1">
-          <div
-            class="i-material-symbols-format-list-bulleted-rounded size-6 cursor-pointer"
-            @click="toggleBulletList"
-          ></div>
-          <div
-            class="i-material-symbols-format-list-numbered-rounded size-6 cursor-pointer"
-            @click="toggleOrderedList"
-          ></div>
-
-          <Popover :disabled>
+          <Tooltip title="Clear All Color" delay="500">
             <div
-              class="size-6 cursor-pointer"
-              :class="{
-                'i-material-symbols-format-align-left-rounded': editor.isActive({
-                  textAlign: 'left',
-                }),
-                'i-material-symbols-format-align-center-rounded': editor.isActive({
-                  textAlign: 'center',
-                }),
-                'i-material-symbols-format-align-right-rounded': editor.isActive({
-                  textAlign: 'right',
-                }),
-                'i-material-symbols-format-align-justify-rounded': editor.isActive({
-                  textAlign: 'justify',
-                }),
-              }"
+              class="i-material-symbols-format-clear-rounded size-5 cursor-pointer"
+              @click="unset"
             ></div>
+          </Tooltip>
+        </div>
+
+        <Divider orientation="vertical" class="!mx-2" />
+
+        <div class="flex gap-1">
+          <Tooltip title="Bold" delay="500">
+            <div
+              class="i-material-symbols-format-bold-rounded size-6 cursor-pointer"
+              :class="{ 'text-primary-500': editor.isActive('bold') && editor.isFocused }"
+              @click="toggleBold"
+            ></div>
+          </Tooltip>
+          <Tooltip title="Italic" delay="500">
+            <div
+              class="i-material-symbols-format-italic-rounded size-6 cursor-pointer"
+              :class="{ 'text-primary-500': editor.isActive('italic') && editor.isFocused }"
+              @click="toggleItalic"
+            ></div>
+          </Tooltip>
+          <Tooltip title="Underline" delay="500">
+            <div
+              class="i-material-symbols-format-underlined-rounded size-6 cursor-pointer"
+              :class="{ 'text-primary-500': editor.isActive('underline') && editor.isFocused }"
+              @click="toggleUnderline"
+            ></div>
+          </Tooltip>
+          <Tooltip title="Strikethrough" delay="500">
+            <div
+              class="i-material-symbols-strikethrough-s-rounded size-6 cursor-pointer"
+              :class="{ 'text-primary-500': editor.isActive('strike') && editor.isFocused }"
+              @click="toggleStrike"
+            ></div>
+          </Tooltip>
+        </div>
+
+        <Divider orientation="vertical" class="!mx-2" />
+
+        <div class="flex gap-1">
+          <Tooltip title="Bullets" delay="500">
+            <div
+              class="i-material-symbols-format-list-bulleted-rounded size-6 cursor-pointer"
+              @click="toggleBulletList"
+            ></div>
+          </Tooltip>
+          <Tooltip title="Numbering" delay="500">
+            <div
+              class="i-material-symbols-format-list-numbered-rounded size-6 cursor-pointer"
+              @click="toggleOrderedList"
+            ></div>
+          </Tooltip>
+
+          <Popover :disabled="!editable">
+            <Tooltip title="Align" delay="500">
+              <div
+                class="size-6 cursor-pointer"
+                :class="{
+                  'i-material-symbols-format-align-left-rounded': editor.isActive({
+                    textAlign: 'left',
+                  }),
+                  'i-material-symbols-format-align-center-rounded': editor.isActive({
+                    textAlign: 'center',
+                  }),
+                  'i-material-symbols-format-align-right-rounded': editor.isActive({
+                    textAlign: 'right',
+                  }),
+                  'i-material-symbols-format-align-justify-rounded': editor.isActive({
+                    textAlign: 'justify',
+                  }),
+                }"
+              ></div>
+            </Tooltip>
 
             <template #content>
               <Listbox>
@@ -455,19 +683,30 @@ defineExpose({
         <Divider orientation="vertical" class="!mx-2" />
 
         <div class="flex gap-1">
-          <div
-            class="i-material-symbols-imagesmode-outline-rounded size-6 cursor-pointer"
-            @click="setImage"
-          ></div>
-          <div class="i-material-symbols-link-rounded size-6 cursor-pointer" @click="setLink"></div>
-          <div
-            class="i-material-symbols-format-quote-rounded size-6 cursor-pointer"
-            @click="toggleBlockquote"
-          ></div>
-          <div
-            class="i-material-symbols-border-horizontal-rounded size-6 cursor-pointer"
-            @click="setHorizontalRule"
-          ></div>
+          <Tooltip title="Image" delay="500">
+            <div
+              class="i-material-symbols-imagesmode-outline-rounded size-6 cursor-pointer"
+              @click="setImage"
+            ></div>
+          </Tooltip>
+          <Tooltip title="Link" delay="500">
+            <div
+              class="i-material-symbols-link-rounded size-6 cursor-pointer"
+              @click="setLink"
+            ></div>
+          </Tooltip>
+          <Tooltip title="Quote" delay="500">
+            <div
+              class="i-material-symbols-format-quote-rounded size-6 cursor-pointer"
+              @click="toggleBlockquote"
+            ></div>
+          </Tooltip>
+          <Tooltip title="Divider" delay="500">
+            <div
+              class="i-material-symbols-border-horizontal-rounded size-6 cursor-pointer"
+              @click="setHorizontalRule"
+            ></div>
+          </Tooltip>
         </div>
       </div>
 
@@ -517,7 +756,7 @@ defineExpose({
   }
 
   :deep(img) {
-    @apply my-1;
+    @apply w-full;
   }
 
   :deep(hr) {

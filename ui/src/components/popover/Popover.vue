@@ -2,18 +2,22 @@
 import { nextTick, ref, computed, reactive, watch, provide } from 'vue';
 import { onClickOutside } from '@vueuse/core';
 
-import useScrollParent from '../../composables/scroll-parent/useScrollParent';
-
 import Fade from '../fade/Fade.vue';
+import useScrollParent from '../../composables/scroll-parent/useScrollParent';
+import scrollableParent from '../../composables/scroll-parent/scrollableParent';
 
 const defaultModel = defineModel<boolean>({ default: undefined });
 
 const props = withDefaults(
   defineProps<{
     disabled?: boolean;
+    start?: boolean;
+    end?: boolean;
   }>(),
   {
     disabled: false,
+    start: false,
+    end: false,
   },
 );
 
@@ -47,21 +51,27 @@ const flux = reactive({
     if (!target.value || !panel.value) return;
 
     const rect = target.value.getBoundingClientRect();
-
     const center = window.innerHeight / 2;
 
     if (rect.top > center) {
-      panel.value.style.top = `${rect.top}px`;
+      const top = scrollableParent(target.value)?.getBoundingClientRect().top || 0;
+      panel.value.style.top = `${Math.abs(top) + rect.top}px`;
       flux.direction = 'up';
     } else {
-      panel.value.style.top = `${rect.bottom}px`;
+      const top = scrollableParent(target.value)?.getBoundingClientRect().top || 0;
+      panel.value.style.top = `${Math.abs(top) + rect.bottom}px`;
       flux.direction = 'down';
     }
 
     const quarter = window.innerWidth / 4;
     const middle = window.innerWidth / 2;
 
-    if (quarter <= rect.right && rect.right <= quarter * 3) {
+    if (props.start) {
+      panel.value.style.left = `${rect.left}px`;
+    } else if (props.end) {
+      const panelRect = panel.value.getBoundingClientRect();
+      panel.value.style.left = `${rect.left - panelRect.width + rect.width}px`;
+    } else if (quarter <= rect.right && rect.right <= quarter * 3) {
       const panelRect = panel.value.getBoundingClientRect();
       panel.value.style.left = `${rect.left - panelRect.width / 2 + rect.width / 2}px`;
     } else if (rect.right > middle && rect.width < middle) {
@@ -96,7 +106,7 @@ onClickOutside(
   () => {
     flux.close();
   },
-  { ignore: [panel] },
+  { ignore: ['.Popover-Panel'] },
 );
 
 provide('Popover', {
@@ -139,7 +149,7 @@ provide('Popover', {
 }
 
 .Popover-Panel {
-  @apply fixed z-101 min-w-max bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700;
+  @apply absolute z-101 min-w-max bg-white dark:bg-slate-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700;
 
   &.placementBottom {
     transform: translateY(0.5rem);

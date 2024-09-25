@@ -1,51 +1,64 @@
 <script lang="ts" setup>
-import { ref, computed, reactive, nextTick } from 'vue';
+import { nextTick, ref, computed, reactive } from 'vue';
 
 import Fade from '../fade/Fade.vue';
 import useScrollParent from '../../composables/scroll-parent/useScrollParent';
+import scrollableParent from '../../composables/scroll-parent/scrollableParent';
 
-defineProps<{
-  title?: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    title?: string;
+    delay?: number | string;
+  }>(),
+  {
+    title: '',
+    delay: 0,
+  },
+);
 
 const target = ref<HTMLDivElement>();
 const panel = ref<HTMLDivElement>();
 
 const flux = reactive({
   status: false,
-  timeout: undefined as ReturnType<typeof setTimeout> | undefined,
+  enterTimeout: undefined as ReturnType<typeof setTimeout> | undefined,
+  leaveTimeout: undefined as ReturnType<typeof setTimeout> | undefined,
   resizePanel() {
     if (target.value && panel.value) {
       const rect = target.value.getBoundingClientRect();
-
       const center = window.innerHeight / 2;
 
-      panel.value.style.left = `${rect.x}px`;
-      panel.value.style.top = `${rect.y}px`;
-
       const xAxis = `calc(${rect.width / 2}px - 50%)`;
+      panel.value.style.left = `${rect.x}px`;
 
       if (rect.top > center) {
-        const yAxis = `calc(-100% - 0.25rem)`;
+        const top = scrollableParent(target.value)?.getBoundingClientRect().top || 0;
+        const yAxis = `calc( ${Math.abs(top) + rect.top}px - 0.25rem - 100%)`;
         panel.value.style.transform = `translate(${xAxis}, ${yAxis})`;
       } else {
-        const yAxis = `calc(${rect.height}px + 0.25rem)`;
+        const top = scrollableParent(target.value)?.getBoundingClientRect().top || 0;
+        const yAxis = `calc(${Math.abs(top) + rect.bottom}px + 0.25rem)`;
         panel.value.style.transform = `translate(${xAxis}, ${yAxis})`;
       }
     }
   },
   onMouseenter() {
-    flux.status = true;
-    clearTimeout(flux.timeout);
+    clearTimeout(flux.leaveTimeout);
 
-    nextTick(() => {
-      flux.resizePanel();
-    });
+    flux.enterTimeout = setTimeout(() => {
+      flux.status = true;
+
+      nextTick(() => {
+        flux.resizePanel();
+      });
+    }, Number(props.delay));
   },
   onMouseleave() {
-    flux.timeout = setTimeout(() => {
+    clearTimeout(flux.enterTimeout);
+
+    flux.leaveTimeout = setTimeout(() => {
       flux.status = false;
-    }, 50);
+    }, 0);
   },
 });
 
@@ -64,15 +77,17 @@ useScrollParent(
       <slot></slot>
     </div>
 
-    <Fade>
-      <div v-if="flux.status" ref="panel" class="Tooltip-Panel" tabindex="-1">
-        <slot name="content">
-          <div class="px-3 py-1 text-sm normal-case text-pretty">
-            {{ title }}
-          </div>
-        </slot>
-      </div>
-    </Fade>
+    <Teleport to="body">
+      <Fade>
+        <div v-if="flux.status" ref="panel" tabindex="-1" class="Tooltip-Panel">
+          <slot name="content">
+            <div class="px-3 py-1 text-sm normal-case text-pretty">
+              {{ title }}
+            </div>
+          </slot>
+        </div>
+      </Fade>
+    </Teleport>
   </div>
 </template>
 
@@ -86,6 +101,6 @@ useScrollParent(
 }
 
 .Tooltip-Panel {
-  @apply fixed left-0 top-0 z-102 text-slate-100 bg-slate-500 rounded-lg shadow-lg;
+  @apply absolute left-0 top-0 z-102 text-slate-100 bg-slate-500 rounded-lg shadow-lg;
 }
 </style>
