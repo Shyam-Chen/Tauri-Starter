@@ -11,7 +11,7 @@
 - [Getting Started](#getting-started)
 - [Project Setup](#project-setup)
 - [Key Features](#key-features)
-- Configuration
+- [Configuration](#configuration)
 - [Directory Structure](#directory-structure)
 
 ## Getting Started
@@ -56,7 +56,7 @@ $ pnpm install
 
 ### iOS
 
-![iOS](./.github/assets/ios.png)
+<img src="./.github/assets/ios.png" alt="iOS" width="375" />
 
 ```sh
 $ sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
@@ -97,7 +97,7 @@ $ pnpm tauri build
 <details>
   <summary><h3>Android</h3></summary>
 
-![Android](./.github/assets/android.png)
+<img src="./.github/assets/android.png" alt="Android" width="375" />
 
 ```sh
 $ cd Library/Android/sdk/ndk/
@@ -178,6 +178,10 @@ This seed repository provides the following features:
 - [x] [Pnpm](https://pnpm.io/) - Package Manager
 - [x] [GitHub Actions](https://github.com/features/actions) - Continuous Integration and Delivery
 - [ ] [Tauri GitHub Action](https://github.com/tauri-apps/tauri-action) - Native Binary
+
+## Configuration
+
+TODO
 
 ## Directory Structure
 
